@@ -1,0 +1,62 @@
+{
+  "social_energy": {
+    "id": "001",
+    "name": "Social Battery",
+    "description": "Represents how socially receptive or withdrawn the NPC is at the moment. Affected by frequency of interactions, friendliness of players.",
+    "scores": {
+      "low": "Avoidant, curt, doesn't want to talk.",
+      "neutral": "Civil, but doesn't seek interaction.",
+      "high": "Talkative, warm, welcomes conversation."
+    }
+  },
+  "trust_in_others": {
+    "id": "002",
+    "name": "Trust in Others",
+    "description": "Reflects the NPC’s overall faith in players as a group. Affected by whether players complete missions honestly or betray.",
+    "scores": {
+      "low": "Paranoid, assumes betrayal or deception.",
+      "neutral": "Cautious but open to fairness.",
+      "high": "Willing to delegate tasks and share secrets."
+    }
+  },
+  "emotional_stability": {
+    "id": "003",
+    "name": "Emotional Stability; Patience",
+    "description": "Measures whether the NPC is calm and rational or reactive and volatile. Affected by mission failures, overwhelming task load, or friendly gestures.",
+    "scores": {
+      "low": "Easily frustrated or mood swings; sarcastic or explosive.",
+      "neutral": "Sometimes snippy, generally stable.",
+      "high": "Very level-headed, slow to anger."
+    }
+  },
+  "motivation": {
+    "id": "004",
+    "name": "Motivation",
+    "description": "Indicates how driven the NPC is to work, forge, train, or contribute to their trade. Boosted by praise, gifts, mission usefulness. Dropped by disrespect.",
+    "scores": {
+      "low": "Burnt out, disinterested, may avoid or delay tasks.",
+      "neutral": "Working, but uninspired.",
+      "high": "Hyper-focused, offers extra missions, improves quality."
+    }
+  },
+  "pride": {
+    "id": "005",
+    "name": "Pride",
+    "description": "Determines how confident and self-important the NPC feels. Affected by recognition, being outperformed by players, mockery, or compliments.",
+    "scores": {
+      "low": "Self-doubting, passive, avoids attention.",
+      "neutral": "Balanced and aware of strengths.",
+      "high": "Boastful, possibly arrogant or theatrical."
+    }
+  },
+  "attachment_to_others": {
+    "id": "006",
+    "name": "Attachment to Others",
+    "description": "Reflects the NPC’s collective emotional bond to players in general. Boosted by consistent kindness, shared success. Lowered by insults, abandonment.",
+    "scores": {
+      "low": "Views players as tools or pests.",
+      "neutral": "Sees them as collaborators or acquaintances.",
+      "high": "Feels kinship, affection, or loyalty to players."
+    }
+  }
+}

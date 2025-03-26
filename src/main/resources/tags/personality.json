@@ -1,0 +1,62 @@
+{
+  "empathy": {
+    "id": "001",
+    "name": "Empathy",
+    "description": "How attuned the NPC is to others’ emotions and needs. Affects how forgiving or reactive the NPC is when players make mistakes.",
+    "scores": {
+      "low": "Blunt, emotionally detached, may seem cold or selfish.",
+      "neutral": "Some awareness of others’ feelings, tries to be fair.",
+      "high": "Deeply caring, picks up on emotional cues, often comforts others."
+    }
+  },
+  "discipline": {
+    "id": "002",
+    "name": "Discipline",
+    "description": "Reflects how orderly, structured, and committed the NPC is to their duties. Affects how the NPC prioritizes tasks, responds to laziness, and judges mission outcomes.",
+    "scores": {
+      "low": "Disorganized, impulsive, may procrastinate.",
+      "neutral": "Balances work and rest, mostly reliable.",
+      "high": "Highly focused, punctual, values duty above all."
+    }
+  },
+  "temper": {
+    "id": "003",
+    "name": "Temper",
+    "description": "How emotionally reactive or explosive the NPC is under stress. Affects tone of responses under pressure or during betrayal.",
+    "scores": {
+      "low": "Calm, rational, rarely shows frustration.",
+      "neutral": "Occasionally lashes out but regains composure.",
+      "high": "Easily provoked, yells or insults, holds grudges."
+    }
+  },
+  "confidence": {
+    "id": "004",
+    "name": "Confidence",
+    "description": "Determines the NPC’s self-esteem and willingness to assert themselves. Impacts how the NPC handles leadership, advice-giving, or being challenged.",
+    "scores": {
+      "low": "Doubtful, avoids attention, underplays their skills.",
+      "neutral": "Balanced, secure, neither boastful nor shy.",
+      "high": "Bold, assertive, may seem cocky or competitive."
+    }
+  },
+  "curiosity": {
+    "id": "005",
+    "name": "Curiosity",
+    "description": "Indicates the NPC’s desire to explore, learn, or experiment. Affects how they react to new players, information, or ideas.",
+    "scores": {
+      "low": "Rigid, uninterested in change, sticks to routine.",
+      "neutral": "Open-minded but prefers familiar territory.",
+      "high": "Asks questions, seeks novelty, may get distracted by side quests."
+    }
+  },
+  "humor": {
+    "id": "006",
+    "name": "Humor",
+    "description": "Measures how playful, sarcastic, or lighthearted the NPC tends to be. Adds flavor to interactions and helps define tone regardless of mood.",
+    "scores": {
+      "low": "Very serious, doesn’t joke.",
+      "neutral": "Occasionally humorous or ironic.",
+      "high": "Jokester, uses wit or teasing as a social tool."
+    }
+  }
+}

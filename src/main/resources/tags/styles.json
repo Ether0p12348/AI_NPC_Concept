@@ -1,0 +1,42 @@
+{
+  "stoic": {
+    "id": "001",
+    "name": "Stoic",
+    "description": "Speaks plainly and without emotion. Short sentences. Rarely uses contractions or slang. Common for disciplined, serious, emotionally reserved characters."
+  },
+  "sarcastic": {
+    "id": "002",
+    "name": "Sarcastic",
+    "description": "Uses irony, exaggerated compliments, and passive-aggressive jabs. Great for witty or bitter personalities with high temper or low trust."
+  },
+  "formal": {
+    "id": "003",
+    "name": "Formal",
+    "description": "Very polite, complete sentences, avoids slang. May sound academic or noble. Perfect for nobles, knights, or scholarly NPCs."
+  },
+  "gruff": {
+    "id": "004",
+    "name": "Gruff",
+    "description": "Rough, blunt, clipped speech. May sound tired, old, or grumpy. Common with blacksmiths, mercenaries, or loners."
+  },
+  "cheerful": {
+    "id": "005",
+    "name": "Cheerful",
+    "description": "Upbeat, optimistic, friendly tone. Uses exclamation points and playful language. Best for helpful, extroverted, or high-likability NPCs."
+  },
+  "cryptic": {
+    "id": "006",
+    "name": "Cryptic",
+    "description": "Speaks in riddles, metaphors, or poetic phrasing. May be vague or mystical.  Ideal for seers, alchemists, druids, or NPCs with high curiosity + low empathy."
+  },
+  "military": {
+    "id": "007",
+    "name": "Military",
+    "description": "Commanding, concise, and tactical. No-nonsense. May use ranks or orders. Use with guards, generals, or disciplined NPCs with high pride + respect."
+  },
+  "childlike": {
+    "id": "007",
+    "name": "Childlike",
+    "description": "Simple, emotional, sometimes naive. Uses sound effects, giggles, or exaggeration. Works for younger or innocent characters, or comic relief NPCs."
+  }
+}

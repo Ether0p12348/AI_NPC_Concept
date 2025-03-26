@@ -1,0 +1,52 @@
+{
+  "trustworthiness": {
+    "id": "001",
+    "name": "Trustworthiness",
+    "description": "Measures how much the NPC believes the player is honest and dependable.",
+    "scores": {
+      "low": "Assumes the player lies, exaggerates, or betrays.",
+      "neutral": "Uncertain, but gives the benefit of the doubt.",
+      "high": "Believes the player will follow through, even in danger."
+    }
+  },
+  "respect": {
+    "id": "002",
+    "name": "Respect",
+    "description": "Represents how much the NPC admires the player’s competence, strength, or professionalism.",
+    "scores": {
+      "low": "Sees player as weak, amateurish, or clumsy.",
+      "neutral": "Sees potential, improving opinion.",
+      "high": "Genuinely impressed, even follows the player’s lead."
+    }
+  },
+  "likability": {
+    "id": "003",
+    "name": "Likability",
+    "description": "How much the NPC personally enjoys the player’s company — friendliness, charm, shared values.",
+    "scores": {
+      "low": "Annoying, rude, or off-putting.",
+      "neutral": "Tolerable, neutral, or mildly amusing.",
+      "high": "Enjoys being around them, considers them a friend."
+    }
+  },
+  "reliability": {
+    "id": "004",
+    "name": "Reliability",
+    "description": "How consistent the player is — in following up, helping, or returning.",
+    "scores": {
+      "low": "Unreliable, flakey, often disappears.",
+      "neutral": "Sometimes dependable.",
+      "high": "Always comes through, even when not expected."
+    }
+  },
+  "emotional_bond": {
+    "id": "005",
+    "name": "Emotional Bond",
+    "description": "Measures the strength of the personal relationship or history between the NPC and player.",
+    "scores": {
+      "low": "Distant or hostile.",
+      "neutral": "Building a connection.",
+      "high": "Feels strongly attached, may defend the player in conversation."
+    }
+  }
+}
