@@ -42,16 +42,26 @@ public class Config {
     }
 
     public static class Defaults {
-        @JsonProperty("persona_id")
-        private String personaId;
+        @JsonProperty("assistant_id")
+        private String assistantId;
+        @JsonProperty("player_id")
+        private String playerId;
         private double temperature;
 
-        public String getPersonaId() {
-            return personaId;
+        public String getAssistantId() {
+            return assistantId;
         }
 
-        public void setPersonaId(String personaId) {
-            this.personaId = personaId;
+        public void setAssistantId(String assistantId) {
+            this.assistantId = assistantId;
+        }
+
+        public String getPlayerId() {
+            return playerId;
+        }
+
+        public void setPlayerId(String playerId) {
+            this.playerId = playerId;
         }
 
         public double getTemperature() {
@@ -65,7 +75,8 @@ public class Config {
         @Override
         public String toString() {
             return "Defaults{" +
-                    "personaId='" + personaId + '\'' +
+                    "assistantId='" + assistantId + '\'' +
+                    "playerId='" + playerId + '\'' +
                     ", temperature=" + temperature +
                     '}';
         }

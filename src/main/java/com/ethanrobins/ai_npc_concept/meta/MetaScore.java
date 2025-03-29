@@ -4,19 +4,19 @@ public class MetaScore {
     /**
      * This mood's definitions
      */
-    private final MetaDef moodState;
+    private final MetaDef state;
     /**
      * This mood's score
      */
     private int score;
 
-    public MetaScore(MetaDef moodState, int score) {
-        this.moodState = moodState;
+    public MetaScore(MetaDef state, int score) {
+        this.state = state;
         this.score = score;
     }
 
-    public MetaScore(MetaDef moodState) {
-        this.moodState = moodState;
+    public MetaScore(MetaDef state) {
+        this.state = state;
         this.score = 5; // NEUTRAL
     }
 
@@ -25,8 +25,8 @@ public class MetaScore {
         return this;
     }
 
-    public MetaDef getMoodState() {
-        return this.moodState;
+    public MetaDef getState() {
+        return this.state;
     }
 
     public int getScore() {

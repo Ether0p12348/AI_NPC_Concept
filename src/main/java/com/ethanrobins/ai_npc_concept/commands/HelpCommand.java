@@ -1,6 +1,5 @@
 package com.ethanrobins.ai_npc_concept.commands;
 
-import com.ethanrobins.ai_npc_concept.utils.CommandString;
 import com.ethanrobins.ai_npc_concept.utils.Console;
 
 import java.util.Arrays;
@@ -8,8 +7,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Help extends Command {
-    public Help() {
+public class HelpCommand extends Command {
+    public HelpCommand() {
         super("help", "Displays available commands.", "help [command_name]");
     }
 

@@ -3,14 +3,13 @@ package com.ethanrobins.ai_npc_concept.configs;
 import com.ethanrobins.ai_npc_concept.Main;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
 public enum ConfigType {
     SECRET(Secret.class, "secret.json"),
     CONFIG(Config.class, "config.json"),
-    ASSISTANTS_CONFIG(AssistantsConfig.class, "assistants.json"),
+    ASSISTANTS_CONFIG(AssistantConfig.class, "assistants.json"),
     PLAYER_CONFIG(PlayerConfig.class, "players.json"),
     MOOD_DEFS(MoodDefs.class, "tags/mood.json"),
     OPINION_DEFS(OpinionDefs.class, "tags/opinion.json"),

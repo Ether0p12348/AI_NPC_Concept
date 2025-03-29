@@ -1,0 +1,32 @@
+{
+  "players": [
+    {
+      "id": "001",
+      "name": "Ether0p12348",
+      "profession": "adventurer",
+      "age": 22,
+      "sex": "MALE"
+    },
+    {
+      "id": "002",
+      "name": "CosmicGamer5246",
+      "profession": "miner",
+      "age": 24,
+      "sex": "MALE"
+    },
+    {
+      "id": "003",
+      "name": "Pureship",
+      "profession": "soldier",
+      "age": 24,
+      "sex": "MALE"
+    },
+    {
+      "id": "004",
+      "name": "simon",
+      "profession": "sorcerer",
+      "age": 22,
+      "sex": "MALE"
+    }
+  ]
+}

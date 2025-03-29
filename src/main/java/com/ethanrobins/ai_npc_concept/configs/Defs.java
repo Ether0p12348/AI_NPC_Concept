@@ -1,6 +1,7 @@
 package com.ethanrobins.ai_npc_concept.configs;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,26 @@ public abstract class Defs<T extends Defs.Def> {
 
     public List<T> getDefs() {
         return defs;
+    }
+
+    @JsonIgnore
+    public T getDef(String id) {
+        for (T def : defs) {
+            if (def.getId().equalsIgnoreCase(id)) {
+                return def;
+            }
+        }
+        return null;
+    }
+
+    @JsonIgnore
+    public T getDefByIdentifier(String identifier) {
+        for (T def : defs) {
+            if (def.getIdentifier().equalsIgnoreCase(identifier)) {
+                return def;
+            }
+        }
+        return null;
     }
 
     @JsonAnySetter

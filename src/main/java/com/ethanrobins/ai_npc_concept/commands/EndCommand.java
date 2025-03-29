@@ -1,10 +1,9 @@
 package com.ethanrobins.ai_npc_concept.commands;
 
 import com.ethanrobins.ai_npc_concept.Main;
-import com.ethanrobins.ai_npc_concept.utils.CommandString;
 
-public class End extends Command{
-    public End() {
+public class EndCommand extends Command{
+    public EndCommand() {
         super("end", "Gracefully ends the program.", "end");
     }
 

@@ -3,7 +3,8 @@
     "level": "DEBUG"
   },
   "defaults": {
-    "persona_id": "001",
+    "assistant_id": "001",
+    "player_id": "001",
     "temperature": 0.7
   }
 }

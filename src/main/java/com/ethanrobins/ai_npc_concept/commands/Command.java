@@ -1,33 +1,33 @@
 package com.ethanrobins.ai_npc_concept.commands;
 
-import com.ethanrobins.ai_npc_concept.utils.CommandString;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class Command {
-    public static List<Command> commands = new ArrayList<>();
+    public static List<Command> commands = Collections.synchronizedList(new ArrayList<>());
 
     protected String name;
     protected String description;
-    protected List<Tag> allowedTags = new ArrayList<>();
+    protected List<Taggable<?>> allowedTags = new ArrayList<>();
     protected String usage;
 
-    public Command(@NotNull String name, @Nullable String description, @Nullable String usage, Tag... allowedTags) {
+    public Command(@NotNull String name, @Nullable String description, @Nullable String usage, Taggable<?>... allowedTags) {
         this.name = name;
         this.description = description != null ? description : "";
-        this.allowedTags.addAll(List.of(allowedTags));
+        for (Taggable<?> t : allowedTags) {
+            if (t != null) {
+                this.allowedTags.add(t);
+            }
+        }
         this.usage = usage != null ? usage : "";
-        commands.add(this);
-    }
 
-    public Command(@NotNull String name, @Nullable String description, @Nullable String usage) {
-        this.name = name;
-        this.description = description != null ? description : "";
-        this.usage = usage != null ? usage : "";
-        commands.add(this);
+        if (commands.stream().noneMatch(command -> command.getName().equalsIgnoreCase(name))) {
+            commands.add(this);
+        }
     }
 
     public abstract void execute(CommandString input);
@@ -45,12 +45,35 @@ public abstract class Command {
         return this;
     }
 
-    public Tag[] getAllowedTags() {
-        return allowedTags.toArray(new Tag[0]);
+    public String getUsage() {
+        return usage;
     }
 
-    public Command addAllowedTag(Tag... tag) {
-        allowedTags.addAll(List.of(tag));
+    public Command setUsage(String usage) {
+        this.usage = usage;
+        return this;
+    }
+
+    public List<Taggable<?>> getAllowedTags() {
+        return new ArrayList<>(allowedTags);
+    }
+
+    @Nullable
+    public Taggable<?> getAllowedTag(String name) {
+        for (Taggable<?> t : allowedTags) {
+            if (t != null && t.getName().equalsIgnoreCase(name)) {
+                return t;
+            }
+        }
+        return null;
+    }
+
+    public Command addAllowedTag(Taggable<?>... tag) {
+        for (Taggable<?> t : allowedTags) {
+            if (t != null && !this.allowedTags.contains(t)) {
+                this.allowedTags.add(t);
+            }
+        }
         return this;
     }
 
@@ -59,17 +82,8 @@ public abstract class Command {
         return this;
     }
 
-    public Command setAllowedTags(List<Tag> tags) {
+    public Command setAllowedTags(List<Taggable<?>> tags) {
         allowedTags = tags;
-        return this;
-    }
-
-    public String getUsage() {
-        return usage;
-    }
-
-    public Command setUsage(String usage) {
-        this.usage = usage;
         return this;
     }
 

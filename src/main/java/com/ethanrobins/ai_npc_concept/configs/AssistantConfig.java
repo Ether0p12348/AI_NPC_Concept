@@ -2,9 +2,11 @@ package com.ethanrobins.ai_npc_concept.configs;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class AssistantsConfig {
+public class AssistantConfig {
     @JsonProperty("default_instructions")
     private String defaultInstructions;
     private List<Assistant> assistants;
@@ -36,6 +38,8 @@ public class AssistantsConfig {
         private Personality personality;
         private List<String> style;
         private Defaults defaults;
+        @JsonProperty("style_overrides")
+        private Map<String, List<String>> styleOverrides = new HashMap<>();
 
         public String getId() {
             return id;
@@ -115,6 +119,14 @@ public class AssistantsConfig {
 
         public void setDefaults(Defaults defaults) {
             this.defaults = defaults;
+        }
+
+        public Map<String, List<String>> getStyleOverrides() {
+            return styleOverrides;
+        }
+
+        public void setStyleOverrides(Map<String, List<String>> styleOverrides) {
+            this.styleOverrides = styleOverrides;
         }
 
         public static class Personality {
