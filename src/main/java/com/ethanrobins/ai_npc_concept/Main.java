@@ -19,26 +19,121 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+/**
+ * <b>Main Class</b> - The central entry point of the application for initializing and managing the AI NPC concept.
+ * <p>This class sets up the environment, configurations, and runtime storage required for simulating and interacting
+ * with AI-driven NPCs (Non-Player Characters). It also provides utility methods and fields for managing assistants
+ * and players during runtime.</p>
+ *
+ * <br><b>Fields:</b>
+ * <ul>
+ *   <li>{@link Main#secret}</li>
+ *   <li>{@link Main#config}</li>
+ *   <li>{@link Main#moodDefs}</li>
+ *   <li>{@link Main#opinionDefs}</li>
+ *   <li>{@link Main#personalityDefs}</li>
+ *   <li>{@link Main#stylesDefs}</li>
+ *   <li>{@link Main#assistantConfig}</li>
+ *   <li>{@link Main#playerConfig}</li>
+ *   <li>{@link Main#assistantList}</li>
+ *   <li>{@link Main#playerList}</li>
+ *   <li>{@link Main#currentAssistant}</li>
+ *   <li>{@link Main#currentPlayer}</li>
+ * </ul>
+ *
+ * <b>Methods:</b>
+ * <ul>
+ *   <li>{@link Main#main(String[])}</li>
+ *   <li>{@link Main#onExit()}</li>
+ *   <li>{@link Main#getSecret()}</li>
+ *   <li>{@link Main#getConfig()}</li>
+ *   <li>{@link Main#getDefs(Type)}</li>
+ *   <li>{@link Main#getDef(Type, String)}</li>
+ *   <li>{@link Main#getAssistants()}</li>
+ *   <li>{@link Main#getPlayers()}</li>
+ * </ul>
+ *
+ * <b>Usage:</b>
+ * <p>Run this class to initialize the application and begin managing the AI NPC concept. Use the fields and methods
+ * for configuration, runtime interactions, and accessing the assistants or players data.</p>
+ */
 public class Main {
     // CONFIGURATIONS
+    /**
+     * Stores the secret configuration values used across the application.
+     */
     private static Secret secret;
+    /**
+     * Global configuration object for defining application-wide settings,
+     */
     private static Config config;
     // DEFAULTS CONFIGURATIONS
+    /**
+     * Contains all mood-related definitions used to shape the emotional attributes
+     * of assistants and their interactions.
+     *
+     * @see Type#MOOD
+     */
     private static MoodDefs moodDefs;
+    /**
+     * Contains all opinion definitions that influence how assistants react or behave
+     * toward different inputs or events.
+     *
+     * @see Type#OPINION
+     */
     private static OpinionDefs opinionDefs;
+    /**
+     * Houses the personality trait definitions that define the behavioral disposition
+     * of assistants.
+     *
+     * @see Type#PERSONALITY
+     */
     private static PersonalityDefs personalityDefs;
+    /**
+     * Contains the various communication and expression styles that assistants
+     * can utilize during interactions.
+     *
+     * @see Type#STYLE
+     */
     private static StylesDefs stylesDefs;
 
+    /**
+     * Configuration object that holds definitions for each assistant in the system.
+     */
     private static AssistantConfig assistantConfig;
-    private static PlayerConfig playerConfig; // TODO: setup player config
+    /**
+     * Configuration object that holds definitions for each player in the system.
+     */
+    private static PlayerConfig playerConfig;
 
     // RUN STORAGE
-    private static final List<Assistant> ASSISTANT_LIST = new ArrayList<>();
-    private static final List<Player> PLAYER_LIST = new ArrayList<>();
+    /**
+     * A list containing all assistant entities loaded from the configuration.
+     * This serves as the in-memory registry of AI-driven NPCs available for interaction.
+     */
+    private static final List<Assistant> assistantList = new ArrayList<>();
+    /**
+     * A list containing all player entities loaded from the configuration.
+     * This holds the registered players recognized by the system at runtime.
+     */
+    private static final List<Player> playerList = new ArrayList<>();
 
+    /**
+     * The currently active assistant during runtime. Used as the focal point for interactions.
+     */
     public static Assistant currentAssistant = null;
+    /**
+     * The currently active player during runtime. Used as the interacting user entity.
+     */
     public static Player currentPlayer = null;
 
+    /**
+     * The entry point of the application.
+     * <p>Initializes configurations, loads assistants and players, and starts the CLI interface.
+     * Also sets up command handlers and assigns default assistant/player from config.</p>
+     *
+     * @param args Command-line arguments passed to the program.
+     */
     public static void main(String[] args) {
         // CONFIGURATIONS
         try {
@@ -325,7 +420,7 @@ public class Main {
                 );
                 assistantProgress.setProgressMessage("Loaded Assistant: " + a.getName() + " (" + a.getId() + ")");
 
-                ASSISTANT_LIST.add(assistant);
+                assistantList.add(assistant);
                 assistantProgress.step();
             } catch (Exception e) {
                 assistantProgress.error(e);
@@ -350,7 +445,7 @@ public class Main {
 
                 playerProgress.setProgressMessage("Loaded Player: " + p.getName() + " (" + p.getId() + ")");
 
-                PLAYER_LIST.add(player);
+                playerList.add(player);
                 playerProgress.step();
             } catch (Exception e) {
                 playerProgress.error(e);
@@ -382,22 +477,48 @@ public class Main {
         new SessionCommand();
     }
 
+    /**
+     * Executes application shutdown logic in a graceful manner.
+     * <p>Logs the shutdown process and performs any required cleanup or exit handling.</p>
+     */
     public static void onExit() {
         Console.log("Shutting down...");
         // GRACEFUL PROGRAM END
         Console.log("Shut down completed.");
     }
 
+    /**
+     * Retrieves the global {@link Secret} configuration object.
+     *
+     * @return {@link Main#secret}
+     */
     public static Secret getSecret() {
         return secret;
     }
 
+    /**
+     * Retrieves the main {@link Config} object for accessing runtime configuration values.
+     *
+     * @return {@link Main#config}
+     */
     public static Config getConfig() {
         return config;
     }
 
+    /**
+     * Retrieves the {@link Defs} container corresponding to the specified {@link Type}.
+     *
+     * <br><b>Behavior:</b>
+     * <ul>
+     *   <li>Returns {@link MoodDefs}, {@link OpinionDefs}, {@link PersonalityDefs}, or {@link StylesDefs}
+     *       depending on the provided {@link Type}.</li>
+     * </ul>
+     *
+     * @param type The {@link Type} to fetch definitions for.
+     * @return The {@link Defs} corresponding to the given {@link Type}.
+     */
     @NotNull
-    public static Defs<? extends Defs.Def> getDefs(Type type) {
+    public static Defs<? extends Defs.Def> getDefs(@NotNull Type type) {
         return switch (type) {
             case Type.MOOD -> moodDefs;
             case Type.OPINION -> opinionDefs;
@@ -406,8 +527,21 @@ public class Main {
         };
     }
 
+    /**
+     * Retrieves a single definition object by its ID and type.
+     *
+     * <br><b>Behavior:</b>
+     * <ul>
+     *   <li>Searches through the definitions provided by {@link #getDefs(Type)}.</li>
+     *   <li>If a matching ID is found, it is returned. Otherwise, returns {@code null}.</li>
+     * </ul>
+     *
+     * @param type The {@link Type} to narrow the definition search space.
+     * @param id The string ID of the definition to look up.
+     * @return The matching {@link Defs.Def} if found, or {@code null} if not.
+     */
     @Nullable
-    public static Defs.Def getDef(Type type, String id) {
+    public static Defs.Def getDef(@NotNull Type type, @NotNull String id) {
         Defs<? extends Defs.Def> defs = getDefs(type);
 
         for (Defs.Def d : defs.getDefs()) {
@@ -419,11 +553,21 @@ public class Main {
         return null;
     }
 
+    /**
+     * Returns a list of all {@link Assistant} entities loaded during startup.
+     *
+     * @return {@link Main#assistantList}
+     */
     public static List<Assistant> getAssistants() {
-        return ASSISTANT_LIST;
+        return assistantList;
     }
 
+    /**
+     * Returns a list of all {@link Player} entities loaded during startup.
+     *
+     * @return {@link Main#playerList}
+     */
     public static List<Player> getPlayers() {
-        return PLAYER_LIST;
+        return playerList;
     }
 }
