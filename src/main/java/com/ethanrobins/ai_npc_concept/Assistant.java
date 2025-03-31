@@ -158,20 +158,98 @@ public class Assistant implements SessionData {
     @Override
     public String toString() {
         return "Assistant{" +
-                "id: '" + this.id + "'" +
-                ", name: '" + this.name + "'" +
-                ", profession: '" + this.profession + "'" +
-                ", age: " + this.age +
-                ", sex: " + this.sex.name() +
-                ", description: '" + this.description + "'" +
-                ", personality: " + this.personality +
-                ", style: " + Arrays.toString(this.style) +
-                ", temperature: " + this.temperature +
-                ", styleOverrides: " + this.styleOverrides +
-                ", emotionalState: '" + this.emotionalState + "'" +
-                ", mood: '" + this.mood +
-                ", opinions: " + this.opinions +
+                "id='" + this.id + "'" +
+                ", name='" + this.name + "'" +
+                ", profession='" + this.profession + "'" +
+                ", age=" + this.age +
+                ", sex=" + this.sex.name() +
+                ", description='" + this.description + "'" +
+                ", personality=" + this.personality +
+                ", style=" + Arrays.toString(this.style) +
+                ", temperature=" + this.temperature +
+                ", styleOverrides=" + this.styleOverrides +
+                ", emotionalState='" + this.emotionalState + "'" +
+                ", mood='" + this.mood +
+                ", opinions=" + this.opinions +
                 "}";
+    }
+
+    public String getStyledData() {
+        String YELLOW = "\u001B[33m";
+        String GREEN = "\u001B[32m";
+        String BLUE = "\u001B[34m";
+        String RESET = "\u001B[0m";
+
+        String personality = "personality: ";
+        String personalityString = BLUE + "empathy: " + YELLOW + this.getPersonality().discipline.getScore() + RESET + "\n" +
+                BLUE + " ".repeat(personality.length()) + "discipline: " + YELLOW + this.getPersonality().discipline.getScore() + RESET + "\n" +
+                BLUE + " ".repeat(personality.length()) + "temper: " + YELLOW + this.getPersonality().temper.getScore() + RESET + "\n" +
+                BLUE + " ".repeat(personality.length()) + "confidence: " + YELLOW + this.getPersonality().confidence.getScore() + RESET + "\n" +
+                BLUE + " ".repeat(personality.length()) + "curiosity: " + YELLOW + this.getPersonality().curiosity.getScore() + RESET + "\n" +
+                BLUE + " ".repeat(personality.length()) + "humor: " + YELLOW + this.getPersonality().humor.getScore() + RESET + "\n";
+
+        String style;
+        if (this.getStyleOverrides().isEmpty()) {
+            style = "style: ";
+        } else {
+            style = "style (default): ";
+        }
+        StringBuilder styleSb = new StringBuilder();
+        boolean isFirstStyle = true;
+        for (MetaDef def : this.getStyle()) {
+            styleSb.append(YELLOW).append(isFirstStyle ? "" : " ".repeat(style.length())).append(def.name()).append(RESET).append("\n");
+            isFirstStyle = false;
+        }
+
+        StringBuilder overridesSb = new StringBuilder();
+        for (StyleOverride o : this.getStyleOverrides()) {
+            String condition = o.getCondition().condition + ": ";
+            StringBuilder conditionStyleSb = new StringBuilder();
+            boolean isFirstConditionStyle = true;
+            for (MetaDef s : o.styles) {
+                conditionStyleSb.append(YELLOW).append(isFirstConditionStyle ? "" : " ".repeat(condition.length())).append(s.name()).append(RESET).append("\n");
+                isFirstConditionStyle = false;
+            }
+
+            overridesSb.append(GREEN).append(condition).append(conditionStyleSb).append(RESET);
+        }
+
+        String mood = "mood: ";
+        String moodSb = BLUE + "socialEnergy: " + YELLOW + this.getMood().socialEnergy.getScore() + RESET + "\n" +
+                BLUE + " ".repeat(mood.length()) + "trustInOthers: " + YELLOW + this.getMood().trustInOthers.getScore() + RESET + "\n" +
+                BLUE + " ".repeat(mood.length()) + "emotionalStability: " + YELLOW + this.getMood().emotionalStability.getScore() + RESET + "\n" +
+                BLUE + " ".repeat(mood.length()) + "motivation: " + YELLOW + this.getMood().motivation.getScore() + RESET + "\n" +
+                BLUE + " ".repeat(mood.length()) + "pride: " + YELLOW + this.getMood().pride.getScore() + RESET + "\n" +
+                BLUE + " ".repeat(mood.length()) + "attachmentToOthers: " + YELLOW + this.getMood().attachmentToOthers.getScore() + RESET + "\n";
+
+        String opinions = "opinions: ";
+        StringBuilder opinionsSb = new StringBuilder();
+        boolean isFirstOpinion = true;
+        boolean isLast = this.getOpinions().size() == 1;
+        for (Opinion o : this.getOpinions()) {
+            isLast = isLast || o == this.getOpinions().getLast();
+            String playerName = o.player.getName();
+            opinionsSb.append(GREEN).append(isFirstOpinion ? "" : " ".repeat(opinions.length())).append(playerName).append(": ").append(BLUE).append("trustworthiness: ").append(YELLOW).append(o.trustworthiness.getScore()).append(RESET).append("\n");
+            opinionsSb.append(GREEN).append(" ".repeat(opinions.length() + playerName.length())).append(playerName).append(": ").append(BLUE).append("respect: ").append(YELLOW).append(o.respect.getScore()).append(RESET).append("\n");
+            opinionsSb.append(GREEN).append(" ".repeat(opinions.length() + playerName.length())).append(playerName).append(": ").append(BLUE).append("likability: ").append(YELLOW).append(o.likability.getScore()).append(RESET).append("\n");
+            opinionsSb.append(GREEN).append(" ".repeat(opinions.length() + playerName.length())).append(playerName).append(": ").append(BLUE).append("reliability: ").append(YELLOW).append(o.reliability.getScore()).append(RESET).append("\n");
+            opinionsSb.append(GREEN).append(" ".repeat(opinions.length() + playerName.length())).append(playerName).append(": ").append(BLUE).append("emotionalBond: ").append(YELLOW).append(o.emotionalBond.getScore()).append(RESET).append(isLast ? "" : "\n");
+            isFirstOpinion = false;
+        }
+
+        return BLUE + "id: " + YELLOW + this.getId() + RESET + "\n" +
+                BLUE + "name: " + YELLOW + this.getName() + RESET + "\n" +
+                BLUE + "profession: " + YELLOW + this.getProfession() + RESET + "\n" +
+                BLUE + "age: " + YELLOW + this.getAge() + RESET + "\n" +
+                BLUE + "sex: " + YELLOW + this.getSex().name() + RESET + "\n" +
+                BLUE + "description: " + YELLOW + this.getDescription() + RESET + "\n" +
+                GREEN + personality + personalityString + RESET +
+                GREEN + style + styleSb + RESET +
+                overridesSb +
+                BLUE + "temperature: " + YELLOW + this.getTemperature() + RESET + "\n" + // TODO: add styleOverrides
+                BLUE + "emotionalState: " + YELLOW + this.getEmotionalState() + RESET + "\n" +
+                GREEN + mood + moodSb + RESET +
+                GREEN + opinions + opinionsSb + RESET;
     }
 
     /**
@@ -373,8 +451,8 @@ public class Assistant implements SessionData {
         @Override
         public String toString() {
             return "StyleOverride{" +
-                    "condition: '" + this.condition.condition + "'" +
-                    ", styles: " + Arrays.toString(this.styles) +
+                    "condition='" + this.condition.condition + "'" +
+                    ", styles=" + Arrays.toString(this.styles) +
                     '}';
         }
     }

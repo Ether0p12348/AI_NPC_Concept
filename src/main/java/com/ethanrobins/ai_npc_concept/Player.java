@@ -132,4 +132,16 @@ public class Player implements SessionData{
                 ", sex: " + this.sex.name() +
                 "}";
     }
+
+    public String getStyledData() {
+        String YELLOW = "\u001B[33m";
+        String BLUE = "\u001B[34m";
+        String RESET = "\u001B[0m";
+
+        return BLUE + "id: " + YELLOW + this.id + RESET + "\n" +
+                BLUE + "name: " + YELLOW + this.name + RESET + "\n" +
+                BLUE + "profession: " + YELLOW + this.profession + RESET + "\n" +
+                BLUE + "age: " + YELLOW + this.age + RESET + "\n" +
+                BLUE + "sex: " + YELLOW + this.sex.name() + RESET;
+    }
 }

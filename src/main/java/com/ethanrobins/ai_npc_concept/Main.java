@@ -8,6 +8,7 @@ import com.ethanrobins.ai_npc_concept.meta.MetaDef;
 import com.ethanrobins.ai_npc_concept.meta.MetaScore;
 import com.ethanrobins.ai_npc_concept.meta.Sex;
 import com.ethanrobins.ai_npc_concept.meta.Type;
+import com.ethanrobins.ai_npc_concept.utils.Color;
 import com.ethanrobins.ai_npc_concept.utils.Console;
 import com.ethanrobins.ai_npc_concept.utils.LogLevel;
 import org.jetbrains.annotations.NotNull;
@@ -258,55 +259,17 @@ public class Main {
                 );
 
                 List<MetaDef> styles = new ArrayList<>();
-                styles.add(new MetaDef(
-                        Objects.requireNonNull(getDef(Type.STYLE, "001")).getId(),
-                        Objects.requireNonNull(getDef(Type.STYLE, "001")).getIdentifier(),
-                        Objects.requireNonNull(getDef(Type.STYLE, "001")).getName(),
-                        Objects.requireNonNull(getDef(Type.STYLE, "001")).getDescription(),
-                        null, null, null
-                ));
-                styles.add(new MetaDef(
-                        Objects.requireNonNull(getDef(Type.STYLE, "002")).getId(),
-                        Objects.requireNonNull(getDef(Type.STYLE, "002")).getIdentifier(),
-                        Objects.requireNonNull(getDef(Type.STYLE, "002")).getName(),
-                        Objects.requireNonNull(getDef(Type.STYLE, "002")).getDescription(),
-                        null, null, null
-                ));
-                styles.add(new MetaDef(
-                        Objects.requireNonNull(getDef(Type.STYLE, "003")).getId(),
-                        Objects.requireNonNull(getDef(Type.STYLE, "003")).getIdentifier(),
-                        Objects.requireNonNull(getDef(Type.STYLE, "003")).getName(),
-                        Objects.requireNonNull(getDef(Type.STYLE, "003")).getDescription(),
-                        null, null, null
-                ));
-                styles.add(new MetaDef(
-                        Objects.requireNonNull(getDef(Type.STYLE, "004")).getId(),
-                        Objects.requireNonNull(getDef(Type.STYLE, "004")).getIdentifier(),
-                        Objects.requireNonNull(getDef(Type.STYLE, "004")).getName(),
-                        Objects.requireNonNull(getDef(Type.STYLE, "004")).getDescription(),
-                        null, null, null
-                ));
-                styles.add(new MetaDef(
-                        Objects.requireNonNull(getDef(Type.STYLE, "005")).getId(),
-                        Objects.requireNonNull(getDef(Type.STYLE, "005")).getIdentifier(),
-                        Objects.requireNonNull(getDef(Type.STYLE, "005")).getName(),
-                        Objects.requireNonNull(getDef(Type.STYLE, "005")).getDescription(),
-                        null, null, null
-                ));
-                styles.add(new MetaDef(
-                        Objects.requireNonNull(getDef(Type.STYLE, "006")).getId(),
-                        Objects.requireNonNull(getDef(Type.STYLE, "006")).getIdentifier(),
-                        Objects.requireNonNull(getDef(Type.STYLE, "006")).getName(),
-                        Objects.requireNonNull(getDef(Type.STYLE, "006")).getDescription(),
-                        null, null, null
-                ));
-                styles.add(new MetaDef(
-                        Objects.requireNonNull(getDef(Type.STYLE, "007")).getId(),
-                        Objects.requireNonNull(getDef(Type.STYLE, "007")).getIdentifier(),
-                        Objects.requireNonNull(getDef(Type.STYLE, "007")).getName(),
-                        Objects.requireNonNull(getDef(Type.STYLE, "007")).getDescription(),
-                        null, null, null
-                ));
+                for (Defs.Def d : getDefs(Type.STYLE).getDefs()) {
+                    if (a.getStyle().contains(d.getIdentifier())) {
+                        styles.add(new MetaDef(
+                                Objects.requireNonNull(getDef(Type.STYLE, d.getId())).getId(),
+                                Objects.requireNonNull(getDef(Type.STYLE, d.getId())).getIdentifier(),
+                                Objects.requireNonNull(getDef(Type.STYLE, d.getId())).getName(),
+                                Objects.requireNonNull(getDef(Type.STYLE, d.getId())).getDescription(),
+                                null, null, null
+                        ));
+                    }
+                }
 
                 List<Assistant.StyleOverride> styleOverrides = new ArrayList<>();
                 a.getStyleOverrides().forEach((k, v) -> {
@@ -475,6 +438,8 @@ public class Main {
         new HelpCommand();
         new EndCommand();
         new SessionCommand();
+
+        Console.log(Color.gradient("This is a gradient test!", Color.Foreground.fromRGB(255, 200, 200), Color.Foreground.fromRGB(200, 255, 200), Color.Foreground.fromRGB(200, 200, 255)));
     }
 
     /**

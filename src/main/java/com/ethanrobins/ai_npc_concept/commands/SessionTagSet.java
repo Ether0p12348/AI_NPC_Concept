@@ -29,7 +29,7 @@ public class SessionTagSet extends TagSet<SessionData> {
      * Constructs the {@link SessionTagSet} with predefined {@code --npc} and {@code --player} tags.
      */
     public SessionTagSet() {
-        super("session", "Tags that return a SessionData object based on tag arguments.", "", Inclusivity.INCLUSIVE, new NpcTag(), new PlayerTag());
+        super("-session", "Tags that return a SessionData object based on tag arguments.", "", Inclusivity.INCLUSIVE, new NpcTag(), new PlayerTag());
     }
 
     /**

@@ -32,23 +32,23 @@ public enum LogEntryType {
     /**
      * Used to indicate ongoing or completed progress-related information.
      */
-    PROGRESS("\u001B[35mPROGRESS\u001B[0m"),
+    PROGRESS(Color.colorize("PROGRESS", Color.BRIGHT_PURPLE.fg())),
     /**
      * Standard informational message.
      */
-    INFO("INFO"),
+    INFO(Color.colorize("INFO", Color.BRIGHT_WHITE.fg())),
     /**
      * Detailed diagnostic output, primarily for developers.
      */
-    DEBUG("\u001B[33mDEBUG\u001B[0m"),
+    DEBUG(Color.colorize("DEBUG", Color.YELLOW.fg())),
     /**
      * Represents a non-critical warning or caution.
      */
-    WARNING("\u001B[33mWARNING\u001B[0m"),
+    WARNING(Color.colorize("WARNING", Color.BRIGHT_YELLOW.fg())),
     /**
      * Critical error or failure state message.
      */
-    ERROR("\u001B[31mERROR\u001B[0m");
+    ERROR(Color.colorize("ERROR", Color.BRIGHT_RED.fg()));
 
     /**
      * The display string used when rendering this log type.

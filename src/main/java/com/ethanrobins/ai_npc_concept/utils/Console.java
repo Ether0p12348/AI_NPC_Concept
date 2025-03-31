@@ -226,7 +226,7 @@ public class Console {
      */
     private static void sendWarn(LogEntryObject entry) {
         System.out.print("\r\033[2K");
-        System.out.println(getFormattedMessage("\u001B[33m" + entry.getMessage() + "\u001B[0m", entry.getType().getDisplay()));
+        System.out.println(getFormattedMessage(Color.colorize(entry.getMessage(), Color.YELLOW.fg()), entry.getType().getDisplay()));
 
         if (cliRunning) {
             System.out.print(PROMPT);
@@ -250,7 +250,7 @@ public class Console {
      */
     private static void sendError(LogEntryObject entry) {
         System.out.print("\r\033[2K");
-        System.out.println(getFormattedMessage("\u001B[31m" + entry.getMessage() + "\u001B[0m", entry.getType().getDisplay()));
+        System.out.println(getFormattedMessage(Color.colorize(entry.getMessage(), Color.RED.fg()), entry.getType().getDisplay()));
         if (entry.getException() != null) {
             entry.getException().printStackTrace();
         }
@@ -278,7 +278,7 @@ public class Console {
     private static void sendDebug(LogEntryObject entry) {
         if (logLevel == LogLevel.DEBUG) {
             System.out.print("\r\033[2K");
-            System.out.println(getFormattedMessage("\u001B[33m" + entry.getMessage() + "\u001B[0m", entry.getType().getDisplay()));
+            System.out.println(getFormattedMessage(Color.colorize(entry.getMessage(), Color.YELLOW.fg()), entry.getType().getDisplay()));
 
             if (cliRunning) {
                 System.out.print(PROMPT);
