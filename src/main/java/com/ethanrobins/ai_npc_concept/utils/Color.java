@@ -7,9 +7,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * <b>Color</b> - ANSI-compatible color enumeration for terminal text formatting.
- * <p>This enum implements {@link Formatting.Formatter} and provides foreground and background color codes using
- * ANSI escape sequences, including support for basic, bright, 8-bit, and 24-bit RGB color formatting.</p>
+ * <b>Color</b> - An advanced ANSI-compatible color enum for text formatting.
+ * <p>Includes 24-bit RGB, 8-bit color code support, gradient generation, and utility objects for foreground
+ * ({@link Color.Foreground}), background ({@link Color.Background}), and mix ({@link Color.Mix}) rendering.</p>
  *
  * <br><b>Constants:</b>
  * <ul>
@@ -30,9 +30,20 @@ import java.util.regex.Pattern;
  *   <li>{@link Color#toString()}</li>
  * </ul>
  *
- * <b>Usage:</b>
- * <p>Use this enum to colorize terminal output by combining foreground and background codes with strings.
- * Includes convenience methods for 8-bit and 24-bit color customization.</p>
+ * <br><b>Usage:</b>
+ * <pre>{@code
+ * Color.Foreground fg = Color.fg(255, 100, 25); // 24-bit RGB foreground
+ * Color.Background bg = Color.bg(0, 100, 255); // Background color
+ * Color.Mix mix = Color.mix(fg, bg)
+ * String output = Color.colorize("Hello, World!", mix);
+ * }</pre>
+ *
+ * @see Formatting
+ * @see Foreground
+ * @see Background
+ * @see Mix
+ * @see ColorObject
+ * @see ColorType
  */
 public enum Color implements Formatting.Formatter {
     /**
@@ -106,19 +117,19 @@ public enum Color implements Formatting.Formatter {
     BRIGHT_WHITE(new Foreground("\u001B[97m"), new Background("\u001B[107m"));
 
     /**
-     * The ANSI escape code for the foreground color.
+     * The {@link Foreground} object for this color.
      */
     private final Foreground foreground;
     /**
-     * The ANSI escape code for the background color.
+     * The {@link Background} object for this color.
      */
     private final Background background;
 
     /**
-     * Constructs a {@link Color} constant with foreground and background escape codes.
+     * Constructs a {@link Color} enum constant with predefined foreground and background ANSI sequences.
      *
-     * @param foreground The ANSI foreground code.
-     * @param background The ANSI background code.
+     * @param foreground {@link #foreground}
+     * @param background {@link #background}
      */
     Color(Foreground foreground, Background background) {
         this.foreground = foreground;
@@ -126,30 +137,30 @@ public enum Color implements Formatting.Formatter {
     }
 
     /**
-     * Returns the ANSI foreground color code for this color.
+     * Returns the {@link Foreground} object for this color.
      *
      * @return {@link #foreground}
      */
-    public ColorObject fg() {
+    public Foreground fg() {
         return this.foreground;
     }
     /**
-     * Returns the ANSI foreground color code of the given {@link Color}.
+     * Returns the {@link Foreground} of the provided color constant.
      *
-     * @param color The {@link Color} to use.
-     * @return {@link #foreground}
+     * @param color {@link Color} constant.
+     * @return The {@link Color}'s {@link Foreground} object.
      */
-    public static ColorObject fg(@NotNull Color color) {
+    public static Foreground fg(@NotNull Color color) {
         return color.fg();
     }
     /**
-     * Returns the ANSI 8-bit foreground color code for a given color code.
+     * Returns the {@link Foreground} of the provided 8-bit color code.
      *
      * @param colorCode An integer from {@code 0} to {@code 255}.
-     * @return ANSI escape sequence for 8-bit color.
+     * @return A {@link Foreground} with the ANSI 8-bit color.
      * @throws IllegalArgumentException if the value is out of range.
      */
-    public static ColorObject fg(int colorCode) {
+    public static Foreground fg(int colorCode) {
         return Foreground.fromEightBit(colorCode);
     }
     /**
@@ -161,80 +172,97 @@ public enum Color implements Formatting.Formatter {
      * @return ANSI escape sequence for 24-bit color.
      * @throws IllegalArgumentException if any value is out of range.
      */
-    public static ColorObject fg(int r, int g, int b) {
+    public static Foreground fg(int r, int g, int b) {
         return Foreground.fromRGB(r, g, b);
     }
 
     /**
-     * Returns the ANSI background color code for this color.
+     * Returns the {@link Background} object for this color.
      *
      * @return {@link #background}
      */
-    public ColorObject bg() {
+    public Background bg() {
         return this.background;
     }
     /**
-     * Returns the ANSI background color code of the given {@link Color}.
+     * Returns the {@link Background} of the provided color constant.
      *
-     * @param color The {@link Color} to use.
-     * @return {@link #background}
+     * @param color {@link Color} constant.
+     * @return The {@link Color}'s {@link Background} object.
      */
-    public static ColorObject bg(@NotNull Color color) {
+    public static Background bg(@NotNull Color color) {
         return color.bg();
     }
     /**
-     * Returns the ANSI 8-bit background color code for a given color code.
+     * Returns the {@link Background} of the provided 8-bit color code.
      *
      * @param colorCode An integer from {@code 0} to {@code 255}.
-     * @return ANSI escape sequence for 8-bit color.
+     * @return A {@link Background} with the ANSI 8-bit color.
      * @throws IllegalArgumentException if the value is out of range.
      */
-    public static ColorObject bg(int colorCode) {
+    public static Background bg(int colorCode) {
         return Background.fromEightBit(colorCode);
     }
     /**
-     * Returns the ANSI 24-bit RGB background color code.
+     * Returns the {@link Background} of the provided 8-bit color code.
      *
      * @param r Red {@code 0-255}
      * @param g Green {@code 0-255}
      * @param b Blue {@code 0-255}
-     * @return ANSI escape sequence for 24-bit color.
+     * @return A {@link Background} with the ANSI 24-bit color.
      * @throws IllegalArgumentException if any value is out of range.
      */
-    public static ColorObject bg(int r, int g, int b) {
+    public static Background bg(int r, int g, int b) {
         return Background.fromRGB(r, g, b);
     }
 
     /**
-     * Returns the ANSI escape code that resets all formatting and colors.
+     * A {@link Mix} of the {@link #RESET} constants that combines the {@link Foreground} and {@link Background} ANSI escape sequences.
      *
-     * @return ANSI reset sequence.
+     * @return {@link Mix} of {@link #RESET}.
      */
-    public static ColorObject resetAll() {
-        return new Mix((Foreground) RESET.fg(), (Background) RESET.bg());
+    public static Mix resetAll() {
+        return new Mix(RESET.fg(), RESET.bg());
     }
 
-    public static ColorObject mix(Foreground foreground, Background background) {
+    /**
+     * Combines this color into a {@link Mix} using both {@link Foreground} and {@link Background} ANSI codes.
+     *
+     * @return {@link Mix} representation.
+     */
+    public static Mix mix(Foreground foreground, Background background) {
         return new Mix(foreground, background);
     }
 
     /**
-     * Wraps a string with ANSI color codes and resets formatting at both ends.
+     * Wraps a string with {@link ColorObject}s and resets formatting at the end.
      *
      * @param text The text to colorize.
-     * @param ansi One or more ANSI formatting codes to apply.
+     * @param colorObject The {@link ColorObject} to apply.
      * @return The colorized string.
      */
-    public static String colorize(@NotNull String text, @NotNull ColorObject ansi) {
+    public static String colorize(@NotNull String text, @NotNull ColorObject colorObject) {
         StringBuilder sb = new StringBuilder();
         sb.append(resetAll());
-        sb.append(ansi);
+        sb.append(colorObject);
         sb.append(text);
         sb.append(resetAll());
 
         return sb.toString();
     }
 
+    /**
+     * Generates a text gradient by applying interpolated {@link ColorObject} values ({@link Foreground}, {@link Background}, or {@link Mix})
+     * across the provided string.
+     *
+     * @param text The text to apply the gradient to. Cannot be {@code null} or empty.
+     * @param rightToLeft An ordered array of {@link ColorObject} used to interpolate between colors. Must contain at least 2 colors.
+     * @return A string with ANSI escape sequences applied as a gradient over the input text.
+     *
+     * @throws IllegalArgumentException If {@code text} is {@code null} or empty, fewer than two color objects are provided,
+     *                                  or any {@link ColorObject} does not support 24-bit color.
+     * @see #interpolateChannel(int, int, float) 
+     */
     public static String gradient(@Nullable String text, @NotNull ColorObject... rightToLeft) {
         if (text == null || text.isEmpty()) {
             throw new IllegalArgumentException("Text cannot be null or empty.");
@@ -283,6 +311,18 @@ public enum Color implements Formatting.Formatter {
         return sb.toString();
     }
 
+    /**
+     * Interpolates between two {@link ColorObject} values to produce a mid-point color based on progress.
+     *
+     * @param start The starting {@link ColorObject}.
+     * @param end The ending {@link ColorObject}.
+     * @param progress A value between 0.0 and 1.0 representing the interpolation point.
+     * @return A new {@link ColorObject} representing the interpolated color.
+     *
+     * @throws IllegalArgumentException If the types of {@code start} and {@code end} are incompatible,
+     *                                  or if either is {@code null}.
+     * @see #interpolateChannel(int, int, float) 
+     */
     private static ColorObject interpolateColor(ColorObject start, ColorObject end, float progress) {
         switch (start) {
             case Foreground fgStart when end instanceof Foreground fgEnd -> {
@@ -313,25 +353,81 @@ public enum Color implements Formatting.Formatter {
         }
     }
 
+    /**
+     * Linearly interpolates a single RGB color channel from a start to an end value.
+     *
+     * @param startChannel The starting value (0–255).
+     * @param endChannel The ending value (0–255).
+     * @param progress A float from 0.0 to 1.0 indicating interpolation progress.
+     * @return The interpolated channel value as an integer.
+     */
     private static int interpolateChannel(int startChannel, int endChannel, float progress) {
         return (int) (startChannel + progress * (endChannel - startChannel));
     }
 
     /**
-     * Returns the default ANSI color representation of this enum.
-     * <p>Returns {@link #resetAll()} if this is {@link Color#RESET}, otherwise returns {@link #fg()}.</p>
+     * Returns the ANSI escape code for the foreground color of this constant.
      *
-     * @return ANSI color code
+     * @return {@link Foreground#toString()} of this color.
      */
     @Override
     public String toString() {
         return this == RESET ? resetAll().toString() : this.fg().toString();
     }
 
-    public static class Foreground implements ColorObject {
+    /**
+     * <b>Color.Foreground</b> - Represents an ANSI-compatible foreground (text) color.
+     * <p>This class implements {@link ColorObject} and {@link Formatting.FormatObject} to support formatted output using
+     * ANSI escape sequences. It supports standard, 8-bit, and 24-bit (true color) foreground colors.</p>
+     *
+     * <br><b>Implements:</b>
+     * <ul>
+     *   <li>{@link ColorObject}</li>
+     *   <li>{@link Formatting.FormatObject}</li>
+     * </ul>
+     *
+     * <br><b>Static Methods:</b>
+     * <ul>
+     *   <li>{@link Foreground#fromEightBit(int)}</li>
+     *   <li>{@link Foreground#fromRGB(int, int, int)}</li>
+     * </ul>
+     *
+     * <br><b>Instance Methods:</b>
+     * <ul>
+     *   <li>{@link Foreground#type()}</li>
+     *   <li>{@link Foreground#red()}</li>
+     *   <li>{@link Foreground#green()}</li>
+     *   <li>{@link Foreground#blue()}</li>
+     *   <li>{@link Foreground#toString()}</li>
+     *   <li>{@link Foreground#equals(Object)}</li>
+     *   <li>{@link Foreground#hashCode()}</li>
+     * </ul>
+     *
+     * <b>Usage:</b>
+     * <pre>{@code
+     * Foreground fg = Foreground.fromRGB(255, 100, 50);
+     * System.out.println(fg + "Hello, World!" + Color.RESET);
+     * }</pre>
+     *
+     * @see Color
+     */
+    public static class Foreground implements ColorObject, Formatting.FormatObject {
+        /**
+         * The raw ANSI escape sequence for this foreground color.
+         */
         private final String ansi;
+        /**
+         * Regular expression pattern that validates ANSI 4-bit, 8-bit, and 24-bit foreground color codes.
+         * <p>This pattern is used during construction to ensure only valid ANSI color strings are accepted.</p>
+         */
         private static final String PATTERN = "\\u001B\\[39m|\\u001B\\[3[0-7]m|\\u001B\\[9[0-7]m|\\u001B\\[38;5;\\d{1,3}m|\\u001B\\[38;2;\\d{1,3};\\d{1,3};\\d{1,3}m";
 
+        /**
+         * Constructs a {@link Foreground} color from a raw ANSI sequence.
+         *
+         * @param ansi The ANSI escape code string representing a valid foreground color.
+         * @throws IllegalArgumentException If the ANSI string is {@code null} or does not match a valid foreground pattern.
+         */
         public Foreground(String ansi) {
             if (ansi == null || !ansi.matches(PATTERN)) {
                 throw new IllegalArgumentException("Invalid ANSI foreground format: " + ansi);
@@ -339,10 +435,21 @@ public enum Color implements Formatting.Formatter {
             this.ansi = ansi;
         }
 
+        /**
+         * Determines the {@link ColorType} of this foreground color (e.g., standard, 8-bit, or 24-bit).
+         *
+         * @return A {@link ColorType} enum representing the format of this foreground.
+         */
         public ColorType type() {
             return ColorType.evalGet(this.ansi);
         }
 
+        /**
+         * Returns the red component of a 24-bit foreground color.
+         *
+         * @return Red value (0–255).
+         * @throws IllegalStateException If this color is not 24-bit.
+         */
         public int red() {
             if (this.type() != ColorType.TWENTY_FOUR_BIT) {
                 throw new IllegalStateException("This color is not a 24-bit color.");
@@ -350,6 +457,12 @@ public enum Color implements Formatting.Formatter {
             return this.extractRGBComponent(1);
         }
 
+        /**
+         * Returns the green component of a 24-bit foreground color.
+         *
+         * @return Green value (0–255).
+         * @throws IllegalStateException If this color is not 24-bit.
+         */
         public int green() {
             if (this.type() != ColorType.TWENTY_FOUR_BIT) {
                 throw new IllegalStateException("This color is not a 24-bit color.");
@@ -357,6 +470,12 @@ public enum Color implements Formatting.Formatter {
             return this.extractRGBComponent(2);
         }
 
+        /**
+         * Returns the blue component of a 24-bit foreground color.
+         *
+         * @return Blue value (0–255).
+         * @throws IllegalStateException If this color is not 24-bit.
+         */
         public int blue() {
             if (this.type() != ColorType.TWENTY_FOUR_BIT) {
                 throw new IllegalStateException("This color is not a 24-bit color.");
@@ -364,6 +483,13 @@ public enum Color implements Formatting.Formatter {
             return this.extractRGBComponent(3);
         }
 
+        /**
+         * Creates a {@link Foreground} from an 8-bit ANSI color code.
+         *
+         * @param colorCode A value from 0 to 255.
+         * @return A {@link Foreground} representing the 8-bit color.
+         * @throws IllegalArgumentException If the color code is out of range.
+         */
         public static Foreground fromEightBit(int colorCode) {
             if (colorCode < 0 || colorCode > 255) {
                 throw new IllegalArgumentException("8-bit color code must be between 0 and 255.");
@@ -371,6 +497,15 @@ public enum Color implements Formatting.Formatter {
             return new Foreground("\u001B[38;5;" + colorCode + "m");
         }
 
+        /**
+         * Creates a {@link Foreground} from RGB values (24-bit true color).
+         *
+         * @param r Red value (0–255)
+         * @param g Green value (0–255)
+         * @param b Blue value (0–255)
+         * @return A {@link Foreground} representing the color.
+         * @throws IllegalArgumentException If any RGB component is out of range.
+         */
         public static Foreground fromRGB(int r, int g, int b) {
             if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255) {
                 throw new IllegalArgumentException("RGB values must be between 0 and 255.");
@@ -378,6 +513,13 @@ public enum Color implements Formatting.Formatter {
             return new Foreground("\u001B[38;2;" + r + ";" + g + ";" + b + "m");
         }
 
+        /**
+         * Internal utility for extracting an RGB component from a 24-bit ANSI foreground sequence.
+         *
+         * @param groupIndex The regex capture group index (1=R, 2=G, 3=B).
+         * @return Integer value of the RGB component.
+         * @throws IllegalStateException If the ANSI format is invalid or not 24-bit.
+         */
         private int extractRGBComponent(int groupIndex) {
             String pattern = "\\u001B\\[38;2;(\\d{1,3});(\\d{1,3});(\\d{1,3})m";
             Pattern regex = Pattern.compile(pattern);
@@ -388,14 +530,25 @@ public enum Color implements Formatting.Formatter {
             }
 
             return Integer.parseInt(matcher.group(groupIndex));
-
         }
 
+        /**
+         * Returns the ANSI escape sequence as a string.
+         *
+         * @return {@link Foreground#ansi}
+         */
         @Override
         public String toString() {
             return this.ansi;
         }
 
+        /**
+         * Compares this {@link Foreground} to another object for equality.
+         * Two foregrounds are equal if their ANSI codes match.
+         *
+         * @param obj Another object.
+         * @return {@code true} if the ANSI codes are equal.
+         */
         @Override
         public boolean equals(Object obj) {
             if (this == obj) return true;
@@ -404,16 +557,70 @@ public enum Color implements Formatting.Formatter {
             return this.ansi.equals(that.ansi);
         }
 
+        /**
+         * Returns the hash code based on the ANSI escape code.
+         *
+         * @return hash code.
+         */
         @Override
         public int hashCode() {
             return this.toString().hashCode();
         }
     }
 
-    public static class Background implements ColorObject {
+    /**
+     * <b>Color.Background</b> - Represents an ANSI-compatible background color.
+     * <p>This class implements {@link ColorObject} and {@link Formatting.FormatObject} to support formatted output using
+     * ANSI escape sequences. It supports standard, 8-bit, and 24-bit (true color) background colors.</p>
+     *
+     * <br><b>Implements:</b>
+     * <ul>
+     *   <li>{@link ColorObject}</li>
+     *   <li>{@link Formatting.FormatObject}</li>
+     * </ul>
+     *
+     * <br><b>Static Methods:</b>
+     * <ul>
+     *   <li>{@link Background#fromEightBit(int)}</li>
+     *   <li>{@link Background#fromRGB(int, int, int)}</li>
+     * </ul>
+     *
+     * <br><b>Instance Methods:</b>
+     * <ul>
+     *   <li>{@link Background#type()}</li>
+     *   <li>{@link Background#red()}</li>
+     *   <li>{@link Background#green()}</li>
+     *   <li>{@link Background#blue()}</li>
+     *   <li>{@link Background#toString()}</li>
+     *   <li>{@link Background#equals(Object)}</li>
+     *   <li>{@link Background#hashCode()}</li>
+     * </ul>
+     *
+     * <b>Usage:</b>
+     * <pre>{@code
+     * Background bg = Background.fromRGB(255, 100, 50);
+     * System.out.println(Color.colorize("Hello, World!", bg));
+     * }</pre>
+     *
+     * @see Color
+     */
+    public static class Background implements ColorObject, Formatting.FormatObject {
+        /**
+         * The raw ANSI escape sequence for this background color.
+         */
         private final String ansi;
+        /**
+         * Regular expression pattern that validates ANSI 4-bit, 8-bit, and 24-bit background color codes.
+         * <p>This pattern is used during construction to ensure only valid ANSI color strings are accepted.</p>
+         */
         private static final String PATTERN = "\\u001B\\[49m|\\u001B\\[4[0-7]m|\\u001B\\[10[0-7]m|\\u001B\\[48;5;\\d{1,3}m|\\u001B\\[48;2;\\d{1,3};\\d{1,3};\\d{1,3}m";
 
+        /**
+         * Constructs a {@link Background} color from a raw ANSI sequence.
+         *
+         * @param ansi The ANSI escape code string representing a valid background color.
+         * @throws IllegalArgumentException If the ANSI string is {@code null} or does not match a valid background pattern.
+         */
         public Background(String ansi) {
             if (ansi == null || !ansi.matches(PATTERN)) {
                 throw new IllegalArgumentException("Invalid ANSI background format: " + ansi);
@@ -421,10 +628,21 @@ public enum Color implements Formatting.Formatter {
             this.ansi = ansi;
         }
 
+        /**
+         * Determines the {@link ColorType} of this background color (e.g., standard, 8-bit, or 24-bit).
+         *
+         * @return A {@link ColorType} enum representing the format of this background.
+         */
         public ColorType type() {
             return ColorType.evalGet(this.ansi);
         }
 
+        /**
+         * Returns the red component of a 24-bit background color.
+         *
+         * @return Red value (0–255).
+         * @throws IllegalStateException If this color is not 24-bit.
+         */
         public int red() {
             if (this.type() != ColorType.TWENTY_FOUR_BIT) {
                 throw new IllegalStateException("This color is not a 24-bit color.");
@@ -432,6 +650,12 @@ public enum Color implements Formatting.Formatter {
             return this.extractRGBComponent(1);
         }
 
+        /**
+         * Returns the green component of a 24-bit background color.
+         *
+         * @return Green value (0–255).
+         * @throws IllegalStateException If this color is not 24-bit.
+         */
         public int green() {
             if (this.type() != ColorType.TWENTY_FOUR_BIT) {
                 throw new IllegalStateException("This color is not a 24-bit color.");
@@ -439,6 +663,12 @@ public enum Color implements Formatting.Formatter {
             return this.extractRGBComponent(2);
         }
 
+        /**
+         * Returns the blue component of a 24-bit background color.
+         *
+         * @return Blue value (0–255).
+         * @throws IllegalStateException If this color is not 24-bit.
+         */
         public int blue() {
             if (this.type() != ColorType.TWENTY_FOUR_BIT) {
                 throw new IllegalStateException("This color is not a 24-bit color.");
@@ -446,6 +676,13 @@ public enum Color implements Formatting.Formatter {
             return this.extractRGBComponent(3);
         }
 
+        /**
+         * Creates a {@link Background} from an 8-bit ANSI color code.
+         *
+         * @param colorCode A value from 0 to 255.
+         * @return A {@link Background} representing the 8-bit color.
+         * @throws IllegalArgumentException If the color code is out of range.
+         */
         public static Background fromEightBit(int colorCode) {
             if (colorCode < 0 || colorCode > 255) {
                 throw new IllegalArgumentException("8-bit color code must be between 0 and 255.");
@@ -453,6 +690,15 @@ public enum Color implements Formatting.Formatter {
             return new Background("\u001B[48;5;" + colorCode + "m");
         }
 
+        /**
+         * Creates a {@link Background} from RGB values (24-bit true color).
+         *
+         * @param r Red value (0–255)
+         * @param g Green value (0–255)
+         * @param b Blue value (0–255)
+         * @return A {@link Background} representing the color.
+         * @throws IllegalArgumentException If any RGB component is out of range.
+         */
         public static Background fromRGB(int r, int g, int b) {
             if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255) {
                 throw new IllegalArgumentException("RGB values must be between 0 and 255.");
@@ -460,21 +706,42 @@ public enum Color implements Formatting.Formatter {
             return new Background("\u001B[48;2;" + r + ";" + g + ";" + b + "m");
         }
 
+        /**
+         * Internal utility for extracting an RGB component from a 24-bit ANSI background sequence.
+         *
+         * @param groupIndex The regex capture group index (1=R, 2=G, 3=B).
+         * @return Integer value of the RGB component.
+         * @throws IllegalStateException If the ANSI format is invalid or not 24-bit.
+         */
         private int extractRGBComponent(int groupIndex) {
-            String pattern = "\\u001B\\[38;2;\\d{1,3};\\d{1,3};\\d{1,3}m";
+            String pattern = "\\u001B\\[48;2;(\\d{1,3});(\\d{1,3});(\\d{1,3})m";
             Pattern regex = Pattern.compile(pattern);
             Matcher matcher = regex.matcher(this.ansi);
+
             if (!matcher.matches()) {
-                throw new IllegalStateException("Invalid ANSI foreground format: " + this.ansi);
+                throw new IllegalStateException("Invalid ANSI background format: " + this.ansi);
             }
+
             return Integer.parseInt(matcher.group(groupIndex));
         }
 
+        /**
+         * Returns the ANSI escape sequence as a string.
+         *
+         * @return {@link Background#ansi}
+         */
         @Override
         public String toString() {
             return this.ansi;
         }
 
+        /**
+         * Compares this {@link Background} to another object for equality.
+         * Two backgrounds are equal if their ANSI codes match.
+         *
+         * @param obj Another object.
+         * @return {@code true} if the ANSI codes are equal.
+         */
         @Override
         public boolean equals(Object obj) {
             if (this == obj) return true;
@@ -483,34 +750,111 @@ public enum Color implements Formatting.Formatter {
             return this.ansi.equals(that.ansi);
         }
 
+        /**
+         * Returns the hash code based on the ANSI escape code.
+         *
+         * @return hash code.
+         */
         @Override
         public int hashCode() {
             return this.toString().hashCode();
         }
     }
 
-    public static class Mix implements ColorObject {
+    /**
+     * <b>Color.Mix</b> - Represents a combined ANSI foreground and background color.
+     * <p>This class implements both {@link ColorObject} and {@link Formatting.FormatObject} to support styled output using
+     * a mix of foreground and background colors. Each instance wraps a {@link Foreground} and {@link Background} object.</p>
+     *
+     * <br><b>Implements:</b>
+     * <ul>
+     *   <li>{@link ColorObject}</li>
+     *   <li>{@link Formatting.FormatObject}</li>
+     * </ul>
+     *
+     * <br><b>Fields:</b>
+     * <ul>
+     *   <li>{@link Mix#foreground}</li>
+     *   <li>{@link Mix#background}</li>
+     * </ul>
+     *
+     * <br><b>Methods:</b>
+     * <ul>
+     *   <li>{@link Mix#foreground()}</li>
+     *   <li>{@link Mix#background()}</li>
+     *   <li>{@link Mix#toString()}</li>
+     *   <li>{@link Mix#equals(Object)}</li>
+     *   <li>{@link Mix#hashCode()}</li>
+     * </ul>
+     *
+     * <b>Usage:</b>
+     * <pre>{@code
+     * Foreground fg = Foreground.fromRGB(255, 255, 0);
+     * Background bg = Background.fromRGB(30, 30, 30);
+     * Mix mix = new Mix(fg, bg);
+     * System.out.println(Color.colorize("Warning message", mix));
+     * }</pre>
+     *
+     * @see Color
+     * @see Color.Foreground
+     * @see Color.Background
+     */
+    public static class Mix implements ColorObject, Formatting.FormatObject {
+        /**
+         * The foreground color applied in this mix.
+         */
         private final Foreground foreground;
+        /**
+         * The background color applied in this mix.
+         */
         private final Background background;
 
+        /**
+         * Constructs a {@link Mix} from the given {@link Foreground} and {@link Background}.
+         *
+         * @param foreground The foreground color to apply.
+         * @param background The background color to apply.
+         */
         public Mix(Foreground foreground, Background background) {
             this.foreground = foreground;
             this.background = background;
         }
 
+        /**
+         * Retrieves the {@link Foreground} part of this mix.
+         *
+         * @return {@link #foreground}
+         */
         public Foreground foreground() {
             return this.foreground;
         }
 
+        /**
+         * Retrieves the {@link Background} part of this mix.
+         *
+         * @return {@link #background}
+         */
         public Background background() {
             return this.background;
         }
 
+        /**
+         * Returns the combined ANSI string for both foreground and background colors.
+         *
+         * @return Concatenated {@link Foreground#toString()} and {@link Background#toString()}.
+         */
         @Override
         public String toString() {
             return this.foreground.toString() + this.background.toString();
         }
 
+        /**
+         * Compares this {@link Mix} with another object for equality.
+         * Two mixes are equal if their foreground and background components are equal.
+         *
+         * @param obj The object to compare with.
+         * @return {@code true} if both mixes have the same foreground and background.
+         */
         @Override
         public boolean equals(Object obj) {
             if (this == obj) return true;
@@ -519,42 +863,158 @@ public enum Color implements Formatting.Formatter {
             return this.foreground.equals(that.foreground) && this.background.equals(that.background);
         }
 
+        /**
+         * Returns the hash code based on the combined ANSI sequences of foreground and background.
+         *
+         * @return Combined hash code of both color layers.
+         */
         @Override
         public int hashCode() {
             return this.toString().hashCode();
         }
     }
 
+    /**
+     * <b>Color.ColorObject</b> - Represents a typed ANSI color formatting object.
+     * <p>This interface is implemented by all typed color components including
+     * {@link Color.Foreground}, {@link Color.Background}, and {@link Color.Mix}. It defines a contract for
+     * ANSI-compatible color objects used in styled terminal output.</p>
+     *
+     * <br><b>Methods:</b>
+     * <ul>
+     *   <li>{@link ColorObject#toString()}</li>
+     *   <li>{@link ColorObject#equals(Object)}</li>
+     *   <li>{@link ColorObject#hashCode()}</li>
+     * </ul>
+     *
+     * <b>Usage:</b>
+     * <p>Use {@code ColorObject} as a common type to handle foreground, background, or mixed ANSI color formats.
+     * This allows gradient rendering and color utilities to generically process color layers.</p>
+     *
+     * @see Color
+     */
     public interface ColorObject {
+        /**
+         * Returns the ANSI escape sequence that represents this color.
+         *
+         * @return A valid ANSI color sequence.
+         */
         @Override
         String toString();
+
+        /**
+         * Checks whether this color object is equal to another.
+         *
+         * @param obj Another {@link Object} to compare.
+         * @return {@code true} if both objects represent the same ANSI color sequence.
+         */
         @Override
         boolean equals(Object obj);
+
+        /**
+         * Returns the hash code of this color object.
+         *
+         * @return Hash code derived from the ANSI sequence.
+         */
         @Override
         int hashCode();
     }
 
+    /**
+     * <b>Color.ColorType</b> - Represents different ANSI color encoding types.
+     * <p>Used to classify a {@link ColorObject} based on its ANSI escape sequence format. This includes support for
+     * standard (normal), bright, 8-bit, and 24-bit color modes.</p>
+     *
+     * <br><b>Enum Constants:</b>
+     * <ul>
+     *   <li>{@link ColorType#RESET}</li>
+     *   <li>{@link ColorType#NORMAL}</li>
+     *   <li>{@link ColorType#BRIGHT}</li>
+     *   <li>{@link ColorType#EIGHT_BIT}</li>
+     *   <li>{@link ColorType#TWENTY_FOUR_BIT}</li>
+     * </ul>
+     *
+     * <br><b>Methods:</b>
+     * <ul>
+     *   <li>{@link ColorType#pattern()}</li>
+     *   <li>{@link ColorType#eval(String)}</li>
+     *   <li>{@link ColorType#evalGet(String)}</li>
+     *   <li>{@link ColorType#toString()}</li>
+     * </ul>
+     *
+     * <b>Usage:</b>
+     * <p>Used internally by {@link Color.Foreground}, {@link Color.Background}, and {@link Color.Mix}
+     * to determine whether a color sequence represents 24-bit, 8-bit, or another ANSI color type.</p>
+     *
+     * @see Color
+     */
     public enum ColorType {
+        /**
+         * Matches ANSI reset sequences for color and formatting.
+         * Example: {@code \u001B[0m}, {@code \u001B[39m}, {@code \u001B[49m}
+         */
         RESET("\\u001B\\[0m|\\u001B\\[39m|\\u001B\\[49m"),
+        /**
+         * Matches standard 4-bit ANSI color codes.
+         * Example: {@code \u001B[31m}, {@code \u001B[44m}
+         */
         NORMAL("\\u001B\\[3[0-7]m|\\u001B\\[4[0-7]m"),
+        /**
+         * Matches bright 4-bit ANSI color codes.
+         * Example: {@code \u001B[91m}, {@code \u001B[107m}
+         */
         BRIGHT("\\u001B\\[9[0-7]m|\\u001B\\[10[0-7]m"),
+        /**
+         * Matches 8-bit indexed ANSI color codes.
+         * Example: {@code \u001B[38;5;123m}, {@code \u001B[48;5;200m}
+         */
         EIGHT_BIT("\\u001B\\[38;5;\\d{1,3}m|\\u001B\\[48;5;\\d{1,3}m"),
+        /**
+         * Matches 24-bit true color ANSI sequences.
+         * Example: {@code \u001B[38;2;255;100;0m}, {@code \u001B[48;2;20;20;20m}
+         */
         TWENTY_FOUR_BIT("\\u001B\\[38;2;\\d{1,3};\\d{1,3};\\d{1,3}m|\\u001B\\[48;2;\\d{1,3};\\d{1,3};\\d{1,3}m");
 
+        /**
+         * The regex pattern used to match ANSI escape sequences of this {@link ColorType}.
+         */
         private final String pattern;
 
+        /**
+         * Constructs a {@link ColorType} with a given regex pattern.
+         *
+         * @param pattern The regex pattern to match against ANSI color strings.
+         */
         ColorType(String pattern) {
             this.pattern = pattern;
         }
 
+        /**
+         * Returns the regex pattern used to identify this {@link ColorType}.
+         *
+         * @return {@link #pattern}
+         */
         public String pattern() {
             return this.pattern;
         }
 
+        /**
+         * Checks whether the given ANSI escape sequence matches this {@link ColorType}.
+         *
+         * @param ansi The ANSI string to evaluate.
+         * @return {@code true} if the ANSI string matches this type’s pattern.
+         */
         public boolean eval(String ansi) {
             return ansi != null && ansi.matches(this.pattern());
         }
 
+        /**
+         * Determines the appropriate {@link ColorType} for the given ANSI string.
+         *
+         * @param ansi The ANSI escape sequence to evaluate.
+         * @return The matching {@link ColorType}.
+         * @throws IllegalArgumentException If no match is found.
+         */
         public static ColorType evalGet(String ansi) {
             for (ColorType t : ColorType.values()) {
                 if (ansi != null && ansi.matches(t.pattern())) {
@@ -564,6 +1024,11 @@ public enum Color implements Formatting.Formatter {
             throw new IllegalArgumentException("Invalid ANSI color format: " + ansi);
         }
 
+        /**
+         * Returns the enum constant name for this {@link ColorType}.
+         *
+         * @return This enum’s name as a string.
+         */
         @Override
         public String toString() {
             return this.name();

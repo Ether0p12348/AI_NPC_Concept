@@ -8,8 +8,8 @@ import com.ethanrobins.ai_npc_concept.meta.MetaDef;
 import com.ethanrobins.ai_npc_concept.meta.MetaScore;
 import com.ethanrobins.ai_npc_concept.meta.Sex;
 import com.ethanrobins.ai_npc_concept.meta.Type;
-import com.ethanrobins.ai_npc_concept.utils.Color;
 import com.ethanrobins.ai_npc_concept.utils.Console;
+import com.ethanrobins.ai_npc_concept.utils.Formatting;
 import com.ethanrobins.ai_npc_concept.utils.LogLevel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -432,14 +432,19 @@ public class Main {
             defaultsProgress.error(e);
         }
 
+        Formatting.test();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
         // CLI
         Console.startCli();
         // Command Registry
         new HelpCommand();
         new EndCommand();
         new SessionCommand();
-
-        Console.log(Color.gradient("This is a gradient test!", Color.Foreground.fromRGB(255, 200, 200), Color.Foreground.fromRGB(200, 255, 200), Color.Foreground.fromRGB(200, 200, 255)));
     }
 
     /**

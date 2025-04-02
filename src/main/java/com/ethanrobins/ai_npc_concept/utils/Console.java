@@ -651,12 +651,12 @@ public class Console {
             if (this.exception == null) {
                 System.out.print(getFormattedMessage(message + " - " + getPercentComplete() + "%: " + (this.progressMessage != null ? ": " + this.progressMessage : ""), this.type.getDisplay()));
             } else {
-                System.out.println(getFormattedMessage(message + " - \u001B[34mERR\u001B[0m", this.type.getDisplay()));
+                System.out.println(getFormattedMessage(message + " - " + Color.colorize("ERR", Color.RED.fg()), this.type.getDisplay()));
             }
 
             if (this.percentComplete >= 100.0 || this.finished) {
                 System.out.print("\r\033[2K");
-                System.out.print(getFormattedMessage(message + " - \u001B[32mDONE\u001B[0m", this.type.getDisplay()));
+                System.out.print(getFormattedMessage(message + " - " + Color.colorize("DONE", Color.GREEN.fg()), this.type.getDisplay()));
                 System.out.println();
 
                 if (Console.cliRunning) {
@@ -737,7 +737,7 @@ public class Console {
             this.exception = exception;
             if (this.isUpToQueue) {
                 System.out.print("\r\033[2K");
-                System.out.print(getFormattedMessage(message + " - \u001B[34mERR\u001B[0m", this.type.getDisplay()));
+                System.out.print(getFormattedMessage(message + " - " + Color.colorize("ERR", Color.RED.fg()), this.type.getDisplay()));
             }
             Console.error(exception);
             complete();
@@ -760,7 +760,7 @@ public class Console {
                 //if (this.percentComplete > ((100.0 / this.numSteps) * (this.numSteps - 1))) {
                 if (this.percentComplete >= 100.0) {
                     System.out.print("\r\033[2K");
-                    System.out.print(getFormattedMessage(message + " - \u001B[32mDONE\u001B[0m", this.type.getDisplay()));
+                    System.out.print(getFormattedMessage(message + " - " + Color.colorize("DONE", Color.GREEN.fg()), this.type.getDisplay()));
                     complete();
                 }
                 return this;

@@ -1,6 +1,8 @@
 package com.ethanrobins.ai_npc_concept.utils;
 
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
  * <b>Formatting</b> - Utility class for constructing ANSI text formatting codes.
@@ -9,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * <br><b>Methods:</b>
  * <ul>
- *   <li>{@link Formatting#mix(String, String, String...)}</li>
+ *   <li>{@link Formatting#mix(Color.ColorObject, Style.StyleObject)}</li>
  *   <li>{@link Formatting#resetAll()}</li>
  * </ul>
  *
@@ -24,26 +26,56 @@ import org.jetbrains.annotations.Nullable;
  *
  * @see Color
  * @see Style
+ * @see Mix
+ * @see Formatter
+ * @see FormatObject
  */
 public class Formatting {
     /**
      * Combines foreground, background, and one or more style codes into a single ANSI sequence.
      *
-     * @param fg The foreground color escape sequence, or {@code null}.
-     * @param bg The background color escape sequence, or {@code null}.
-     * @param style Optional additional style codes (e.g., bold, italic).
-     * @return Combined ANSI escape sequence string.
+     * @param colorObject The color object.
+     * @param styleObject The style object.
+     * @return Combined ANSI escape sequence Mix object.
      */
-    public static String mix(@Nullable String fg, @Nullable String bg, String... style) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(fg != null ? fg : "");
-        sb.append(bg != null ? bg : "");
-
-        for (String s : style) {
-            sb.append(s);
+    public static Mix<Color.ColorObject, Style.StyleObject> mix(@NotNull Color.ColorObject colorObject, @NotNull Style.StyleObject styleObject) {
+        Color.ColorObject color;
+        Class<? extends Color.ColorObject> colorClass;
+        switch (colorObject) {
+            case Color.Foreground fg -> {
+                color = new Color.Foreground(fg.toString());
+                colorClass = Color.Foreground.class;
+            }
+            case Color.Background bg -> {
+                color = new Color.Background(bg.toString());
+                colorClass = Color.Background.class;
+            }
+            case Color.Mix m -> {
+                color = new Color.Mix(new Color.Foreground(m.foreground().toString()), new Color.Background(m.background().toString()));
+                colorClass = Color.Mix.class;
+            }
+            default ->
+                    throw new IllegalArgumentException("Invalid color object type: " + colorObject.getClass().getName());
         }
 
-        return sb.toString();
+        Style.StyleObject style;
+        Class<? extends Style.StyleObject> styleClass;
+        if (styleObject instanceof Style.SetStyle s) {
+            style = new Style.SetStyle(s.toString());
+            styleClass = Style.SetStyle.class;
+        } else if (styleObject instanceof Style.Mix<?> m) {
+            if (m.ansi() instanceof Style.SetStyle[] s) {
+                List<Style.SetStyle> styles = List.of(s);
+                style = new Style.Mix<>(styles.toArray(new Style.SetStyle[0]));
+                styleClass = Style.Mix.class;
+            } else {
+                throw new IllegalArgumentException("Invalid style object type: " + m.ansi().getClass().getName());
+            }
+        } else {
+            throw new IllegalArgumentException("Invalid style object type: " + styleObject.getClass().getName());
+        }
+
+        return new Mix<>(colorClass.cast(color), styleClass.cast(style));
     }
 
     /**
@@ -51,91 +83,198 @@ public class Formatting {
      *
      * @return The complete ANSI sequence to reset all text formatting.
      */
-    public static String resetAll() {
-        return Style.resetAll() + Color.resetAll();
+    public static FormatObject resetAll() {
+        return new Mix<>(Color.resetAll(), Style.resetAll());
     }
 
-//    public static void test() {
-//        Thread thread = new Thread(() -> {
-//            StringBuilder sb = new StringBuilder();
-//            sb.append(Color.colorize("RESET (default)", Color.RESET.fg())).append("\n");
-//            sb.append(Color.colorize("BLACK", Color.BLACK.fg())).append("\n");
-//            sb.append(Color.colorize("RED", Color.RED.fg())).append("\n");
-//            sb.append(Color.colorize("GREEN", Color.GREEN.fg())).append("\n");
-//            sb.append(Color.colorize("YELLOW", Color.YELLOW.fg())).append("\n");
-//            sb.append(Color.colorize("BLUE", Color.BLUE.fg())).append("\n");
-//            sb.append(Color.colorize("PURPLE", Color.PURPLE.fg())).append("\n");
-//            sb.append(Color.colorize("CYAN", Color.CYAN.fg())).append("\n");
-//            sb.append(Color.colorize("WHITE", Color.WHITE.fg())).append("\n");
-//            sb.append("\n");
-//            sb.append(Color.colorize("BRIGHT_BLACK", Color.BRIGHT_BLACK.fg())).append("\n");
-//            sb.append(Color.colorize("BRIGHT_RED", Color.BRIGHT_RED.fg())).append("\n");
-//            sb.append(Color.colorize("BRIGHT_GREEN", Color.BRIGHT_GREEN.fg())).append("\n");
-//            sb.append(Color.colorize("BRIGHT_YELLOW", Color.BRIGHT_YELLOW.fg())).append("\n");
-//            sb.append(Color.colorize("BRIGHT_BLUE", Color.BRIGHT_BLUE.fg())).append("\n");
-//            sb.append(Color.colorize("BRIGHT_PURPLE", Color.BRIGHT_PURPLE.fg())).append("\n");
-//            sb.append(Color.colorize("BRIGHT_CYAN", Color.BRIGHT_CYAN.fg())).append("\n");
-//            sb.append(Color.colorize("BRIGHT_WHITE", Color.BRIGHT_WHITE.fg())).append("\n");
-//            sb.append("\n");
-//            sb.append(Color.colorize("BLACK_BACKGROUND", Color.BLACK.bg())).append("\n");
-//            sb.append(Color.colorize("RED_BACKGROUND", Color.RED.bg())).append("\n");
-//            sb.append(Color.colorize("GREEN_BACKGROUND", Color.GREEN.bg())).append("\n");
-//            sb.append(Color.colorize("YELLOW_BACKGROUND", Color.YELLOW.bg())).append("\n");
-//            sb.append(Color.colorize("BLUE_BACKGROUND", Color.BLUE.bg())).append("\n");
-//            sb.append(Color.colorize("PURPLE_BACKGROUND", Color.PURPLE.bg())).append("\n");
-//            sb.append(Color.colorize("CYAN_BACKGROUND", Color.CYAN.bg())).append("\n");
-//            sb.append(Color.colorize("WHITE_BACKGROUND", Color.WHITE.bg())).append("\n");
-//            sb.append("\n");
-//            sb.append(Color.colorize("BRIGHT_BLACK_BACKGROUND", Color.BRIGHT_BLACK.bg())).append("\n");
-//            sb.append(Color.colorize("BRIGHT_RED_BACKGROUND", Color.BRIGHT_RED.bg())).append("\n");
-//            sb.append(Color.colorize("BRIGHT_GREEN_BACKGROUND", Color.BRIGHT_GREEN.bg())).append("\n");
-//            sb.append(Color.colorize("BRIGHT_YELLOW_BACKGROUND", Color.BRIGHT_YELLOW.bg())).append("\n");
-//            sb.append(Color.colorize("BRIGHT_BLUE_BACKGROUND", Color.BRIGHT_BLUE.bg())).append("\n");
-//            sb.append(Color.colorize("BRIGHT_PURPLE_BACKGROUND", Color.BRIGHT_PURPLE.bg())).append("\n");
-//            sb.append(Color.colorize("BRIGHT_CYAN_BACKGROUND", Color.BRIGHT_CYAN.bg())).append("\n");
-//            sb.append(Color.colorize("BRIGHT_WHITE_BACKGROUND", Color.BRIGHT_WHITE.bg())).append("\n");
-//            sb.append("\n");
-//            sb.append(Style.stylize("BOLD", Style.BOLD)).append("\n");
-//            sb.append(Style.stylize("ITALIC", Style.ITALIC)).append("\n");
-//            sb.append(Style.stylize("UNDERLINE", Style.UNDERLINE)).append("\n");
-//            sb.append(Color.colorize("BRIGHT_WHITE with BLACK_BACKGROUND " + Style.REVERSE + "REVERSE", Formatting.mix(Color.BRIGHT_WHITE.fg(), Color.BLACK.bg()))).append("\n");
-//            sb.append(Style.stylize("STRIKETHROUGH", Style.STRIKETHROUGH)).append("\n");
-//
-//            System.out.println(sb);
-//
-//            System.out.println(Color.colorize("All 8-bit colors:", Formatting.mix(Color.BRIGHT_WHITE.fg(), Color.BLACK.bg())));
-//            int width = 16; // Number of colors in each row (to maintain a compact grid)
-//            int height = 16; // Since there are 256 colors, 16x16 grid works perfectly
-//
-//            for (int y = 0; y < height; y++) {
-//                for (int x = 0; x < width; x++) {
-//                    int colorCode = y * width + x; // Compute the color code from row and column
-//                    // Append the block character along with the color code as a demo
-//                    System.out.print(Color.colorize(String.format("%3d ", colorCode), Formatting.mix(Color.fg(26,48,112), Color.bg(colorCode))));
-//                }
-//                System.out.println(); // Move to the next line after printing one row
-//            }
-//            System.out.println();
-//
-//
-//            System.out.println(Color.colorize("24-bit colors (not limited to):", Formatting.mix(Color.BRIGHT_WHITE.fg(), Color.BLACK.bg())));
-//            width = 80;  // Width of the console output
-//            height = 20; // Number of gradient rows
-//            for (int y = 0; y < height; y++) {
-//                for (int x = 0; x < width; x++) {
-//                    // Generate RGB based on position
-//                    int red = (x * 255) / (width - 1);  // Red intensity gradient left to right
-//                    int green = (y * 255) / (height - 1); // Green intensity gradient top to bottom
-//                    int blue = 255 - ((x * 255) / (width - 1)); // Blue intensity decreases left to right
-//
-//                    // Build ANSI 24-bit color code
-//                    System.out.print(Color.colorize("█", Formatting.mix(Color.fg(red, green, blue), Color.bg(red, green, blue))));
-//                }
-//                System.out.println();
-//            }
-//        });
-//        thread.start();
-//    }
+    /**
+     * Prints all features offered by the Formatting system.
+     */
+    public static void test() {
+        Thread thread = new Thread(() -> {
+            StringBuilder sb = new StringBuilder();
+            sb.append(Color.colorize("RESET (default)", Color.RESET.fg())).append("\n");
+            sb.append(Color.colorize("BLACK", Color.BLACK.fg())).append("\n");
+            sb.append(Color.colorize("RED", Color.RED.fg())).append("\n");
+            sb.append(Color.colorize("GREEN", Color.GREEN.fg())).append("\n");
+            sb.append(Color.colorize("YELLOW", Color.YELLOW.fg())).append("\n");
+            sb.append(Color.colorize("BLUE", Color.BLUE.fg())).append("\n");
+            sb.append(Color.colorize("PURPLE", Color.PURPLE.fg())).append("\n");
+            sb.append(Color.colorize("CYAN", Color.CYAN.fg())).append("\n");
+            sb.append(Color.colorize("WHITE", Color.WHITE.fg())).append("\n");
+            sb.append("\n");
+            sb.append(Color.colorize("BRIGHT_BLACK", Color.BRIGHT_BLACK.fg())).append("\n");
+            sb.append(Color.colorize("BRIGHT_RED", Color.BRIGHT_RED.fg())).append("\n");
+            sb.append(Color.colorize("BRIGHT_GREEN", Color.BRIGHT_GREEN.fg())).append("\n");
+            sb.append(Color.colorize("BRIGHT_YELLOW", Color.BRIGHT_YELLOW.fg())).append("\n");
+            sb.append(Color.colorize("BRIGHT_BLUE", Color.BRIGHT_BLUE.fg())).append("\n");
+            sb.append(Color.colorize("BRIGHT_PURPLE", Color.BRIGHT_PURPLE.fg())).append("\n");
+            sb.append(Color.colorize("BRIGHT_CYAN", Color.BRIGHT_CYAN.fg())).append("\n");
+            sb.append(Color.colorize("BRIGHT_WHITE", Color.BRIGHT_WHITE.fg())).append("\n");
+            sb.append("\n");
+            sb.append(Color.colorize("BLACK_BACKGROUND", Color.BLACK.bg())).append("\n");
+            sb.append(Color.colorize("RED_BACKGROUND", Color.RED.bg())).append("\n");
+            sb.append(Color.colorize("GREEN_BACKGROUND", Color.GREEN.bg())).append("\n");
+            sb.append(Color.colorize("YELLOW_BACKGROUND", Color.YELLOW.bg())).append("\n");
+            sb.append(Color.colorize("BLUE_BACKGROUND", Color.BLUE.bg())).append("\n");
+            sb.append(Color.colorize("PURPLE_BACKGROUND", Color.PURPLE.bg())).append("\n");
+            sb.append(Color.colorize("CYAN_BACKGROUND", Color.CYAN.bg())).append("\n");
+            sb.append(Color.colorize("WHITE_BACKGROUND", Color.WHITE.bg())).append("\n");
+            sb.append("\n");
+            sb.append(Color.colorize("BRIGHT_BLACK_BACKGROUND", Color.BRIGHT_BLACK.bg())).append("\n");
+            sb.append(Color.colorize("BRIGHT_RED_BACKGROUND", Color.BRIGHT_RED.bg())).append("\n");
+            sb.append(Color.colorize("BRIGHT_GREEN_BACKGROUND", Color.BRIGHT_GREEN.bg())).append("\n");
+            sb.append(Color.colorize("BRIGHT_YELLOW_BACKGROUND", Color.BRIGHT_YELLOW.bg())).append("\n");
+            sb.append(Color.colorize("BRIGHT_BLUE_BACKGROUND", Color.BRIGHT_BLUE.bg())).append("\n");
+            sb.append(Color.colorize("BRIGHT_PURPLE_BACKGROUND", Color.BRIGHT_PURPLE.bg())).append("\n");
+            sb.append(Color.colorize("BRIGHT_CYAN_BACKGROUND", Color.BRIGHT_CYAN.bg())).append("\n");
+            sb.append(Color.colorize("BRIGHT_WHITE_BACKGROUND", Color.BRIGHT_WHITE.bg())).append("\n");
+            sb.append("\n");
+            sb.append(Color.gradient("This is a foreground GRADIENT!", Color.Foreground.fromRGB(255, 200, 200), Color.Foreground.fromRGB(200, 255, 200), Color.Foreground.fromRGB(200, 200, 255))).append("\n");
+            sb.append(Color.gradient("This is a background GRADIENT!", Color.mix(Color.Foreground.fromRGB(0, 0, 0), Color.Background.fromRGB(255, 200, 200)), Color.mix(Color.Foreground.fromRGB(0, 0, 0), Color.Background.fromRGB(200, 255, 200)), Color.mix(Color.Foreground.fromRGB(0, 0, 0), Color.Background.fromRGB(200, 200, 255)))).append("\n");
+            sb.append("\n");
+            sb.append(Style.stylize("BOLD", Style.BOLD.style())).append("\n");
+            sb.append(Style.stylize("ITALIC", Style.ITALIC.style())).append("\n");
+            sb.append(Style.stylize("UNDERLINE", Style.UNDERLINE.style())).append("\n");
+            sb.append(Color.colorize("BRIGHT_WHITE with BLACK_BACKGROUND " + Style.stylize("REVERSE", Style.REVERSE.style()), Color.mix(Color.BRIGHT_WHITE.fg(), Color.BLACK.bg()))).append("\n");
+            sb.append(Style.stylize("STRIKETHROUGH", Style.STRIKETHROUGH.style())).append("\n");
+
+            System.out.println(sb);
+
+            System.out.println(Color.colorize("All 8-bit colors:", Color.mix(Color.BRIGHT_WHITE.fg(), Color.BLACK.bg())));
+            int width = 16;
+            int height = 16;
+
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    int colorCode = y * width + x;
+                    System.out.print(Color.colorize(String.format("%3d ", colorCode), Color.mix(Color.fg(26,48,112), Color.bg(colorCode))));
+                }
+                System.out.println();
+            }
+            System.out.println();
+
+
+            System.out.println(Color.colorize("24-bit colors (not limited to):", Color.mix(Color.BRIGHT_WHITE.fg(), Color.BLACK.bg())));
+            width = 80;
+            height = 20;
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    int red = (x * 255) / (width - 1);
+                    int green = (y * 255) / (height - 1);
+                    int blue = 255 - ((x * 255) / (width - 1));
+
+                    System.out.print(Color.colorize("█", Color.mix(Color.fg(red, green, blue), Color.bg(red, green, blue))));
+                }
+                System.out.println();
+            }
+        });
+        thread.start();
+    }
+
+    /**
+     * <b>Formatting.Mix</b> - Combines a {@link Color.ColorObject} and a {@link Style.StyleObject} into a single formatted unit.
+     * <p>This generic formatting object can be used to apply both color and style simultaneously in ANSI terminal output.
+     * The formatting sequence is generated by concatenating the ANSI strings of the color and style.</p>
+     *
+     * <br><b>Implements:</b>
+     * <ul>
+     *   <li>{@link Formatting.FormatObject}</li>
+     * </ul>
+     *
+     * <br><b>Fields:</b>
+     * <ul>
+     *   <li>{@link Formatting.Mix#color}</li>
+     *   <li>{@link Formatting.Mix#style}</li>
+     * </ul>
+     *
+     * <br><b>Methods:</b>
+     * <ul>
+     *   <li>{@link Formatting.Mix#color()}</li>
+     *   <li>{@link Formatting.Mix#style()}</li>
+     *   <li>{@link Formatting.Mix#toString()}</li>
+     *   <li>{@link Formatting.Mix#equals(Object)}</li>
+     * </ul>
+     *
+     * <b>Usage:</b>
+     * <pre>{@code
+     * Formatting.Mix<Color.Foreground, Style.Bold> format =
+     *     new Formatting.Mix<>(Color.Foreground.fromRGB(255, 0, 0), Style.BOLD);
+     * System.out.println(format + "Important Text" + Color.RESET);
+     * }</pre>
+     *
+     * @param <C> A type that extends {@link Color.ColorObject}, representing a foreground, background, or mix color.
+     * @param <S> A type that extends {@link Style.StyleObject}, representing text style attributes such as bold or italic.
+     * @see Color.ColorObject
+     * @see Style.StyleObject
+     * @see Formatting.FormatObject
+     */
+    public static class Mix<C extends Color.ColorObject, S extends Style.StyleObject> implements FormatObject {
+        /**
+         * The {@link Color.ColorObject} layer of this mix. Can be {@link Color.Foreground}, {@link Color.Background}, or a combined {@link Color.Mix}.
+         */
+        private final C color;
+        /**
+         * The text {@link Style.Styler} layer of this mix. Expected to be a {@link Style.SetStyle}, {@link Style.Reset}, or {@link Style.Mix}.
+         */
+        private final S style;
+
+        /**
+         * Constructs a {@link Formatting.Mix} from a color and a style object.
+         *
+         * @param color The {@link Color.ColorObject}, typically a {@link Color.Foreground}, {@link Color.Background}, or {@link Color.Mix}.
+         * @param style The {@link Style.StyleObject}, such as {@link Style#BOLD} or {@link Style#ITALIC}.
+         */
+        public Mix(C color, S style) {
+            this.color = color;
+            this.style = style;
+        }
+
+        /**
+         * Retrieves the color portion of this formatting mix.
+         *
+         * @return {@link #color}
+         */
+        public C color() {
+            return color;
+        }
+
+        /**
+         * Retrieves the style portion of this formatting mix.
+         *
+         * @return {@link #style}
+         */
+        public S style() {
+            return style;
+        }
+
+        /**
+         * Concatenates the ANSI string of both the color and style to produce the complete ANSI sequence.
+         *
+         * @return ANSI string representing the color and style together.
+         */
+        @Override
+        public String toString() {
+            return Color.resetAll().toString() + Style.resetAll().toString() + color.toString() + style.toString() + Color.resetAll().toString() + Style.resetAll().toString();
+        }
+
+        /**
+         * Compares this {@link Formatting.Mix} to another object for equality.
+         * Two mixes are equal if their {@link #color} and {@link #style} are both equal.
+         *
+         * @param obj The object to compare.
+         * @return {@code true} if both the color and style match.
+         */
+        @SuppressWarnings("unchecked")
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) return true;
+            if (obj == null || getClass() != obj.getClass()) return false;
+            if (!color.equals(((Mix<?, ?>) obj).color()) || !style.equals(((Mix<?, ?>) obj).style())) return false;
+            Mix<C, S> mix = (Mix<C, S>) obj;
+            return equals(mix);
+        }
+    }
 
     /**
      * <b>Formatting.Formatter</b> - Marker interface for formatting enums such as {@link Color} or {@link Style}.
@@ -152,5 +291,49 @@ public class Formatting {
          */
         @Override
         String toString();
+    }
+
+    /**
+     * <b>Formatting.FormatObject</b> - Marker interface for ANSI formatting objects used in styled terminal output.
+     * <p>This interface standardizes the contract for formatting-related types, such as color, style, or their combinations.
+     * Implementations must override {@link #toString()}, {@link #equals(Object)}, and {@link #hashCode()} to ensure
+     * compatibility with formatting utilities and comparison operations.</p>
+     *
+     * <br><b>Methods:</b>
+     * <ul>
+     *   <li>{@link #toString()}</li>
+     *   <li>{@link #equals(Object)}</li>
+     *   <li>{@link #hashCode()}</li>
+     * </ul>
+     *
+     * <b>Usage:</b>
+     * <p>All objects that are used for constructing formatting sequences must implement this interface to ensure they are
+     * recognized by {@link Formatting} tools and validated during formatting operations.</p>
+     */
+    public interface FormatObject {
+        /**
+         * Returns the ANSI string representation of this formatting object.
+         *
+         * @return ANSI escape sequence string.
+         */
+        @Override
+        String toString();
+
+        /**
+         * Compares this formatting object to another for equality.
+         *
+         * @param obj The object to compare.
+         * @return {@code true} if the two formatting objects are equivalent.
+         */
+        @Override
+        boolean equals(Object obj);
+
+        /**
+         * Computes a hash code for this formatting object.
+         *
+         * @return The hash code derived from the underlying ANSI string or state.
+         */
+        @Override
+        int hashCode();
     }
 }
