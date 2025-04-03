@@ -264,7 +264,7 @@ public enum Style implements Formatting.Formatter {
          * Regular expression pattern for validating allowed ANSI style codes (e.g., bold, italic, underline, etc.).
          * Supported codes: {@code 1, 2, 3, 4, 5, 7, 8, 9}.
          */
-        private static final String PATTERN = "\\u001B\\[(1|2|3|4|5|7|8|9)m";
+        private static final String PATTERN = "\\u001B\\[[1-57-9]m";
 
         /**
          * Constructs a {@link SetStyle} with a given ANSI sequence.
@@ -358,7 +358,7 @@ public enum Style implements Formatting.Formatter {
          * <p>Matches known reset codes: {@code 22} (bold/dim), {@code 23} (italic), {@code 24} (underline),
          * {@code 25} (blink), {@code 27} (reverse), {@code 28} (hidden), and {@code 29} (strikethrough).</p>
          */
-        private static final String PATTERN = "\\u001B\\[(22|23|24|25|27|28|29)m";
+        private static final String PATTERN = "\\u001B\\[2[2-57-9]m";
 
         /**
          * Constructs a {@link Reset} object using a valid ANSI reset sequence.

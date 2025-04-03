@@ -65,7 +65,7 @@ public class SessionCommand extends Command {
     public SessionCommand() {
         super("session", "Sets environment values for test executions.", "session switch {--npc, --player}\nsession info [--npc | --player]", new SessionTagSet()); // TODO: May have to make sure things like this complies with the singleton system and init SessionTagSet in the Main method.
 
-        this.sessionTagSet = (SessionTagSet) this.getAllowedTag("session");
+        this.sessionTagSet = (SessionTagSet) this.getAllowedTag("-session");
     }
 
     /**

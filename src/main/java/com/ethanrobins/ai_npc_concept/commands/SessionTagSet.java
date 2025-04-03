@@ -42,7 +42,7 @@ public class SessionTagSet extends TagSet<SessionData> {
      * </ul>
      *
      * <br><b>Example usage:</b>
-     * <pre>{@code /session switch --npc "blacksmith_01"}</pre>
+     * <pre>{@code > session switch --npc "blacksmith_01"}</pre>
      *
      * @see SessionTagSet
      */

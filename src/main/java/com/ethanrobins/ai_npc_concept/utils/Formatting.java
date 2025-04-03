@@ -32,6 +32,12 @@ import java.util.List;
  */
 public class Formatting {
     /**
+     * The global RegEx pattern for this system.
+     * <br><a href="https://regexr.com/8dprj">Test it!</a>
+     */
+    public static final String PATTERN = "\\u001B\\[(0|(3|4|9|10)[0-79]|[34]8;(5;\\d{1,3}|2;\\d{1,3};\\d{1,3};\\d{1,3})|[1-57-9]|2[2-57-9])m";
+
+    /**
      * Combines foreground, background, and one or more style codes into a single ANSI sequence.
      *
      * @param colorObject The color object.

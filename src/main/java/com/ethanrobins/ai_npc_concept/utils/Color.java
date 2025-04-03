@@ -420,7 +420,7 @@ public enum Color implements Formatting.Formatter {
          * Regular expression pattern that validates ANSI 4-bit, 8-bit, and 24-bit foreground color codes.
          * <p>This pattern is used during construction to ensure only valid ANSI color strings are accepted.</p>
          */
-        private static final String PATTERN = "\\u001B\\[39m|\\u001B\\[3[0-7]m|\\u001B\\[9[0-7]m|\\u001B\\[38;5;\\d{1,3}m|\\u001B\\[38;2;\\d{1,3};\\d{1,3};\\d{1,3}m";
+        private static final String PATTERN = "\\u001B\\[(39|[39][0-7]|38;[25];(\\d{1,3}|\\d{1,3};\\d{1,3};\\d{1,3}))m";
 
         /**
          * Constructs a {@link Foreground} color from a raw ANSI sequence.
@@ -613,7 +613,7 @@ public enum Color implements Formatting.Formatter {
          * Regular expression pattern that validates ANSI 4-bit, 8-bit, and 24-bit background color codes.
          * <p>This pattern is used during construction to ensure only valid ANSI color strings are accepted.</p>
          */
-        private static final String PATTERN = "\\u001B\\[49m|\\u001B\\[4[0-7]m|\\u001B\\[10[0-7]m|\\u001B\\[48;5;\\d{1,3}m|\\u001B\\[48;2;\\d{1,3};\\d{1,3};\\d{1,3}m";
+        private static final String PATTERN = "\\u001B\\[(49|(4|10)[0-7]|48;[25];(\\d{1,3}|\\d{1,3};\\d{1,3};\\d{1,3}))m";
 
         /**
          * Constructs a {@link Background} color from a raw ANSI sequence.
@@ -953,27 +953,27 @@ public enum Color implements Formatting.Formatter {
          * Matches ANSI reset sequences for color and formatting.
          * Example: {@code \u001B[0m}, {@code \u001B[39m}, {@code \u001B[49m}
          */
-        RESET("\\u001B\\[0m|\\u001B\\[39m|\\u001B\\[49m"),
+        RESET("\\u001B\\[(0|[34]9)m"),
         /**
          * Matches standard 4-bit ANSI color codes.
          * Example: {@code \u001B[31m}, {@code \u001B[44m}
          */
-        NORMAL("\\u001B\\[3[0-7]m|\\u001B\\[4[0-7]m"),
+        NORMAL("\\u001B\\[(3|4)[0-7]m"),
         /**
          * Matches bright 4-bit ANSI color codes.
          * Example: {@code \u001B[91m}, {@code \u001B[107m}
          */
-        BRIGHT("\\u001B\\[9[0-7]m|\\u001B\\[10[0-7]m"),
+        BRIGHT("\\u001B\\[(9|10)[0-7]m"),
         /**
          * Matches 8-bit indexed ANSI color codes.
          * Example: {@code \u001B[38;5;123m}, {@code \u001B[48;5;200m}
          */
-        EIGHT_BIT("\\u001B\\[38;5;\\d{1,3}m|\\u001B\\[48;5;\\d{1,3}m"),
+        EIGHT_BIT("\\u001B\\[(3|4)8;5;\\d{1,3}m"),
         /**
          * Matches 24-bit true color ANSI sequences.
          * Example: {@code \u001B[38;2;255;100;0m}, {@code \u001B[48;2;20;20;20m}
          */
-        TWENTY_FOUR_BIT("\\u001B\\[38;2;\\d{1,3};\\d{1,3};\\d{1,3}m|\\u001B\\[48;2;\\d{1,3};\\d{1,3};\\d{1,3}m");
+        TWENTY_FOUR_BIT("\\u001B\\[(3|4)8;2;\\d{1,3};\\d{1,3};\\d{1,3}m");
 
         /**
          * The regex pattern used to match ANSI escape sequences of this {@link ColorType}.

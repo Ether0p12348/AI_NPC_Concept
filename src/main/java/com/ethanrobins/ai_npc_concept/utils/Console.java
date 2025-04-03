@@ -339,13 +339,17 @@ public class Console {
         if (lines.length <= 1) return message;
 
         StringBuilder builder = new StringBuilder(lines[0]);
-        String padding = " ".repeat(prefix.length());
+        String padding = " ".repeat(removeAnsiCodes(prefix).length());
 
         for (int i = 1; i < lines.length; i++) {
             builder.append("\n").append(padding).append(lines[i]);
         }
 
         return builder.toString();
+    }
+
+    public static String removeAnsiCodes(String input) {
+        return input.replaceAll(Formatting.PATTERN, "");
     }
 
     /**
