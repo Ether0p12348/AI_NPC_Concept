@@ -9,7 +9,6 @@ import com.ethanrobins.ai_npc_concept.meta.MetaScore;
 import com.ethanrobins.ai_npc_concept.meta.Sex;
 import com.ethanrobins.ai_npc_concept.meta.Type;
 import com.ethanrobins.ai_npc_concept.utils.Console;
-import com.ethanrobins.ai_npc_concept.utils.Formatting;
 import com.ethanrobins.ai_npc_concept.utils.LogLevel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -430,13 +429,6 @@ public class Main {
             defaultsProgress.step();
         } catch (Exception e) {
             defaultsProgress.error(e);
-        }
-
-        Formatting.test();
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         }
 
         // CLI

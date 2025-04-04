@@ -42,7 +42,7 @@ import java.util.List;
  *
  * @param <T> The output type expected from tags inside this tag set.
  */
-public abstract class TagSet<T> implements Taggable<T> {
+public abstract class TagSet<T> implements Taggable<T>, CommandPart {
     /**
      * A synchronized list of all registered {@link TagSet} instances.
      */
@@ -210,6 +210,14 @@ public abstract class TagSet<T> implements Taggable<T> {
         }
 
         return null;
+    }
+
+    /**
+     * Retrieves the {@link Inclusivity} rule for this object.
+     * @return {@link #inclusivity}
+     */
+    public Inclusivity getInclusivity() {
+        return this.inclusivity;
     }
 
     /**

@@ -46,7 +46,7 @@ import java.util.List;
  * <p>Extend this class to implement specific command logic. Commands are automatically registered by name
  * into a global synchronized list and can be retrieved statically.</p>
  */
-public abstract class Command {
+public abstract class Command implements CommandPart {
     /**
      * A global list of all registered {@link Command} instances.
      */

@@ -43,7 +43,7 @@ import java.util.List;
  *
  * @param <T> The output type produced by this tag’s {@link #use(String)} method.
  */
-public abstract class Tag<T> implements Taggable<T> {
+public abstract class Tag<T> implements Taggable<T>, CommandPart {
     /**
      * A global, synchronized list of all unique tags registered in the system.
      */
